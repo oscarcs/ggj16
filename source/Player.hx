@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -12,6 +13,9 @@ class Player extends FlxSprite
 {
 	public var game:Game;
 	public var accFloor = 800;
+	public var jumpTimer:FlxTimer = null;
+	public var canJump:Bool = true;
+	public var jumpReleased:Bool = true;
 	
 	public function new(game:Game, x:Int, y:Int, graphic:String) 
 	{
@@ -34,6 +38,10 @@ class Player extends FlxSprite
 	override public function update()
 	{
 		this.acceleration.x = 0;
+		if (this.isTouching(FlxObject.FLOOR) && jumpReleased)
+		{
+			canJump = true;
+		}
 		
 		if (FlxG.overlap(this, game.chains))
 		{
@@ -58,23 +66,32 @@ class Player extends FlxSprite
 			if (this.isTouching(FlxObject.RIGHT) && this.velocity.y > 0)
 				WallSlide();
 		}
-		if (FlxG.keys.anyJustPressed(["UP", "W"]) 
-			&& (this.isTouching(FlxObject.FLOOR)
-				|| this.isTouching(FlxObject.RIGHT)
-				|| this.isTouching(FlxObject.LEFT)))
+		if (FlxG.keys.anyPressed(["UP", "W"]) && canJump)
 		{
 			this.y -= 1;
-			this.velocity.y = -420;
-			if (this.isTouching(FlxObject.RIGHT))
+			this.velocity.y = -120;
+			jumpReleased = false;
+			if (jumpTimer == null)
+				jumpTimer = new FlxTimer(0.25, OnJumpTimer);
+		}
+		if (FlxG.keys.anyJustPressed(["UP", "W"]))
+		{
+			if (this.isTouching(FlxObject.RIGHT) && jumpReleased)
 			{
+				this.velocity.y = -320;
 				this.velocity.x = -320;
-				this.velocity.y *= 0.8;
 			}
-			else if (this.isTouching(FlxObject.LEFT))
+			else if (this.isTouching(FlxObject.LEFT) && jumpReleased)
 			{
+				this.velocity.y = -320;
 				this.velocity.x = 320;
-				this.velocity.y *= 0.8;
 			}
+		}
+		
+		if (FlxG.keys.anyJustReleased(["UP", "W"]))
+		{
+			canJump = false;
+			jumpReleased = true;
 		}
 		
 		// ANIMATION
@@ -105,5 +122,11 @@ class Player extends FlxSprite
 			this.acceleration.y *= -1;
 		else
 			this.acceleration.y /= 10;
+	}
+	
+	public function OnJumpTimer(timer:FlxTimer)
+	{
+		jumpTimer = null;
+		canJump = false;
 	}
 }
