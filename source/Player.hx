@@ -16,8 +16,12 @@ class Player extends FlxSprite
 	public var index:Int;
 	public var jumpTimer:FlxTimer = null;
 	public var canJump:Bool = true;
+	public var canWallJump:Bool = true;
 	public var jumpReleased:Bool = true;
 	public var holding:Bool = false;
+	public var startJumpSpd:Float = -150;
+	public var jumpSpd:Float = -150;
+	public var maxJumpSpd:Float = -200;
 	
 	public function new(game:Game, x:Int, y:Int, graphic:String, index:Int) 
 	{
@@ -41,6 +45,7 @@ class Player extends FlxSprite
 	override public function update()
 	{
 		this.acceleration.x = 0;
+		canWallJump = false;
 		if (this.isTouching(FlxObject.FLOOR) && jumpReleased)
 		{
 			canJump = true;
@@ -96,26 +101,33 @@ class Player extends FlxSprite
 		
 		if (game.control.isPressedJump(index) && canJump)
 		{
-			
-			this.velocity.y = -150;
+			if (jumpSpd > maxJumpSpd)
+				jumpSpd += (maxJumpSpd - startJumpSpd) / 10;
+			this.velocity.y = this.jumpSpd;
 			jumpReleased = false;
 			if (jumpTimer == null)
 				jumpTimer = new FlxTimer(0.3, OnJumpTimer);
 			holding = false;
 		}
-		if (game.control.isJustPressedJump(index))
+		if (game.control.isJustPressedJump(index) && (canJump || canWallJump))
 		{
-			this.y -= 1;
-			if (this.isTouching(FlxObject.RIGHT) && jumpReleased)
+			
+			this.jumpSpd = this.startJumpSpd;
+			this.velocity.y = this.jumpSpd;
+			trace("A");
+			if (this.isTouching(FlxObject.RIGHT)  && canWallJump)
 			{
+				trace("R");
 				this.velocity.y = -320;
 				this.velocity.x = -320;
 			}
-			else if (this.isTouching(FlxObject.LEFT) && jumpReleased)
+			else if (this.isTouching(FlxObject.LEFT)  && canWallJump)
 			{
+				trace("L");
 				this.velocity.y = -320;
 				this.velocity.x = 320;
 			}
+			this.y -= 1;
 		}
 		
 		if (game.control.isJustReleasedJump(index))
@@ -145,7 +157,8 @@ class Player extends FlxSprite
 	
 	public function wallSlide()
 	{
-		
+		if(jumpReleased)
+			canWallJump = true;
 		if (this.velocity.y > 200)
 			this.acceleration.y *= -1;
 		else
