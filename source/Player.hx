@@ -13,7 +13,6 @@ class Player extends FlxSprite
 	public var accFactor = 2;
 	public var game:Game;
 	
->>>>>>> 9645d5a47e1fbd3ea3b67adbb150526c7ec5585d
 	public function new(game:Game, x:Int, y:Int, graphic:String) 
 	{
 		super(x, y);

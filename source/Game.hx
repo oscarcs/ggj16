@@ -10,6 +10,7 @@ import flixel.util.FlxMath;
 import flixel.addons.display.FlxBackdrop;
 #if !flash
 import sys.net.Socket;
+#end
 #if cpp
 import cpp.vm.Thread;
 #elseif neko
