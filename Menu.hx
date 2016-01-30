@@ -24,7 +24,7 @@ class Menu extends FlxState
 		
 		if (SKIP_MENU)
 		{
-			//FlxG.switchState(new Game());
+			FlxG.switchState(new Game(control));
 		}
 	}
 	

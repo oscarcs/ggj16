@@ -13,16 +13,18 @@ class Player extends FlxSprite
 {
 	public var game:Game;
 	public var accFloor = 800;
+	public var index:Int;
 	public var jumpTimer:FlxTimer = null;
 	public var canJump:Bool = true;
 	public var jumpReleased:Bool = true;
 	
-	public function new(game:Game, x:Int, y:Int, graphic:String) 
+	public function new(game:Game, x:Int, y:Int, graphic:String, index:Int) 
 	{
 		super(x, y);
 		loadGraphic(graphic, true, 32, 32);
 		
 		this.game = game;
+		this.index = index;
 		this.drag.x = 1200;
 		this.acceleration.y = Game.GRAVITY;
 		this.maxVelocity.set(120, 500);
@@ -52,7 +54,7 @@ class Player extends FlxSprite
 			acceleration.y = Game.GRAVITY;
 		}
 		
-		if (FlxG.keys.anyPressed(["LEFT", "A"]))
+		if (game.control.isLeft(index))
 		{
 			this.flipX = true;
 			this.acceleration.x -= this.accFloor;
@@ -61,7 +63,7 @@ class Player extends FlxSprite
 				wallSlide();
 			}
 		}
-		else if (FlxG.keys.anyPressed(["RIGHT", "D"]))
+		else if (game.control.isRight(index))
 		{
 			this.flipX = false;
 			this.acceleration.x += this.accFloor;
@@ -70,7 +72,9 @@ class Player extends FlxSprite
 				wallSlide();
 			}
 		}
-		if (FlxG.keys.anyPressed(["UP", "W"]) && canJump)
+		
+		
+		if (game.control.isPressedJump(index) && canJump)
 		{
 			this.y -= 1;
 			this.velocity.y = -120;
@@ -78,7 +82,7 @@ class Player extends FlxSprite
 			if (jumpTimer == null)
 				jumpTimer = new FlxTimer(0.25, OnJumpTimer);
 		}
-		if (FlxG.keys.anyJustPressed(["UP", "W"]))
+		if (game.control.isJustPressedJump(index))
 		{
 			if (this.isTouching(FlxObject.RIGHT) && jumpReleased)
 			{
@@ -92,7 +96,7 @@ class Player extends FlxSprite
 			}
 		}
 		
-		if (FlxG.keys.anyJustReleased(["UP", "W"]))
+		if (game.control.isJustReleasedJump(index))
 		{
 			canJump = false;
 			jumpReleased = true;
@@ -113,9 +117,7 @@ class Player extends FlxSprite
 			this.animation.play("walk");
 		}
 		
-		//this.animation.play('idle');
-		
-				super.update();
+		super.update();
 		
 	}
 	
