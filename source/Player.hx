@@ -49,14 +49,18 @@ class Player extends FlxSprite
 			this.flipX = true;
 			this.acceleration.x -= this.accFloor;
 			if (this.isTouching(FlxObject.LEFT) && this.velocity.y > 0)
-				WallSlide();
+			{
+				wallSlide();
+			}
 		}
 		else if (FlxG.keys.anyPressed(["RIGHT", "D"]))
 		{
 			this.flipX = false;
 			this.acceleration.x += this.accFloor;
 			if (this.isTouching(FlxObject.RIGHT) && this.velocity.y > 0)
-				WallSlide();
+			{
+				wallSlide();
+			}
 		}
 		if (FlxG.keys.anyJustPressed(["UP", "W"]) 
 			&& (this.isTouching(FlxObject.FLOOR)
@@ -98,7 +102,7 @@ class Player extends FlxSprite
 		
 	}
 	
-	public function WallSlide()
+	public function wallSlide()
 	{
 		
 		if (this.velocity.y > 200)
