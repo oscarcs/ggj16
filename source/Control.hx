@@ -13,9 +13,17 @@ class Control extends FlxBasic
 {
 	public var gamepads:Array<FlxGamepad> = [];
 	
+	public var btnJump:Int;
+	
+	
 	public function new()
 	{
 		super();
+		#if flash
+		btnJump = XboxButtonID.A;
+		#else
+		btnJump = 0;
+		#end
 
 	}
 	
@@ -45,8 +53,8 @@ class Control extends FlxBasic
 	{
 		if (gamepads[player] != null)
 		{
-			var gamepad:FlxGamepad = gamepads[player];
-			if(gamepad.anyPressed([XboxButtonID.A]))
+			var gamepad = gamepads[player];
+			if(gamepad.anyPressed([btnJump]))
 			{
 				return true;
 			}
@@ -65,9 +73,10 @@ class Control extends FlxBasic
 	{
 		if (gamepads[player] != null)
 		{
-			var gamepad:FlxGamepad = gamepads[player];
-			if(gamepad.anyJustPressed([XboxButtonID.A]))
+			var gamepad = gamepads[player];
+			if(gamepad.anyJustPressed([btnJump]))
 			{
+				trace("A");
 				return true;
 			}
 		}
@@ -85,8 +94,8 @@ class Control extends FlxBasic
 	{
 		if (gamepads[player] != null)
 		{
-			var gamepad:FlxGamepad = gamepads[player];
-			if(gamepad.anyJustReleased([XboxButtonID.A]))
+			var gamepad = gamepads[player];
+			if(gamepad.anyJustReleased([btnJump]))
 			{
 				return true;
 			}
@@ -113,7 +122,7 @@ class Control extends FlxBasic
 		}
 		else
 		{
-			if (FlxG.keys.anyJustPressed(["RIGHT", "D"]))
+			if (FlxG.keys.anyPressed(["RIGHT", "D"]))
 			{
 				return true;
 			}
@@ -133,7 +142,7 @@ class Control extends FlxBasic
 		}
 		else
 		{
-			if (FlxG.keys.anyJustPressed(["LEFT", "A"]))
+			if (FlxG.keys.anyPressed(["LEFT", "A"]))
 			{
 				return true;
 			}
