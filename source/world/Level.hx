@@ -29,7 +29,6 @@ class Level
 			var bgTilemap = new FlxTilemap();
 			
 			var tilemapData = loadMapString(sections[i], 16, 16);
-			trace(tilemapData.string);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
 			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
@@ -44,13 +43,12 @@ class Level
 			var entery = 0;
 			if (i > 0)
 			{
-				var enterx = (Std.int(tilemapData.entry % width) * Game.TILE_WIDTH);
-				var entery = (Std.int(tilemapData.entry / width) * Game.TILE_HEIGHT);
+				enterx = (Std.int(tilemapData.entry % width) * Game.TILE_WIDTH);
+				entery = (Std.int(tilemapData.entry / width) * Game.TILE_HEIGHT);
 			}
-			
+			trace(x, y, enterx, entery, x - enterx, y - entery);
 			tilemap.setPosition(x - enterx, y - entery);
 			bgTilemap.setPosition(x - enterx, y - entery);
-			trace(tilemap.x, tilemap.y);
 			
 			x = tilemap.x + (Std.int(tilemapData.exit % width) * Game.TILE_WIDTH);
 			y = tilemap.y + (Std.int(tilemapData.exit / width) * Game.TILE_HEIGHT);

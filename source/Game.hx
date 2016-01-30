@@ -8,8 +8,10 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.addons.display.FlxBackdrop;
+#if !flash
 import sys.net.Socket;
 import neko.vm.Thread;
+#end
 
 import world.Level;
 
@@ -25,8 +27,10 @@ class Game extends FlxState
 	public var mid:FlxBackdrop;
 	public var fore:FlxBackdrop;
 	public var fog:FlxBackdrop;
+	#if !flash
 	public var socket:Socket;
-    public var clientThread:Thread;    
+    public var clientThread:Thread;
+	#end
 	
 	//objects and such
 	public var chains:FlxGroup;
@@ -52,10 +56,12 @@ class Game extends FlxState
 		fog = new FlxBackdrop("assets/bg/fog.png", 0, 0, true, false);
 		add(fog);
 		
+		#if !flash
 		socket = new sys.net.Socket();
 		socket.connect(new sys.net.Host("10.30.0.71"), 8080);
 		clientThread = Thread.create(getMsgs);
 		clientThread.sendMessage(Thread.current());
+		#end
 	}
 
 	override public function destroy():Void
@@ -65,9 +71,11 @@ class Game extends FlxState
 	
 	override public function update():Void
 	{
+		#if !flash
 		var clientData = Thread.readMessage(false);
 		if(clientData != null)
 			trace(clientData);
+		#end
 		fog.x --;
 		
 		super.update();
@@ -89,6 +97,7 @@ class Game extends FlxState
 		add(fore);
 	}
 	
+	#if !flash
 	function getMsgs()
 	{
 		var main:Thread = Thread.readMessage(true);
@@ -104,4 +113,5 @@ class Game extends FlxState
 			}
 		}
 	}
+	#end
 }
