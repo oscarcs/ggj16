@@ -41,6 +41,26 @@ class Control extends FlxBasic
 		templist = [];
 	} 
 	
+	public function isPressedJump(player:Int):Bool
+	{
+		if (gamepads[player] != null)
+		{
+			var gamepad:FlxGamepad = gamepads[player];
+			if(gamepad.anyPressed([XboxButtonID.A]))
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyPressed(["UP", "W"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public function isJustPressedJump(player:Int):Bool
 	{
 		if (gamepads[player] != null)
@@ -54,6 +74,26 @@ class Control extends FlxBasic
 		else
 		{
 			if (FlxG.keys.anyJustPressed(["UP", "W"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function isJustReleasedJump(player:Int):Bool
+	{
+		if (gamepads[player] != null)
+		{
+			var gamepad:FlxGamepad = gamepads[player];
+			if(gamepad.anyJustReleased([XboxButtonID.A]))
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyJustReleased(["UP", "W"]))
 			{
 				return true;
 			}
