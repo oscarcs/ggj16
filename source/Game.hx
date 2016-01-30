@@ -43,6 +43,7 @@ class Game extends FlxState
 	
 	//objects and such
 	public var chains:FlxGroup;
+	public var spikes:FlxGroup;
 	
 	override public function new(control:Control)
 	{
@@ -62,11 +63,13 @@ class Game extends FlxState
 		addBackgrounds();
 		
 		chains = new FlxGroup();
+		spikes = new FlxGroup();
 		
 		level = new Level(this);
 		level.loadSections([0, 1]);
 		
 		add(chains);
+		add(spikes);
 		
 		players = new FlxGroup();
 		red = new Player(this, 32, 32, "assets/player/red.png", 0);
@@ -104,6 +107,8 @@ class Game extends FlxState
 		if(clientData != null)
 			trace(clientData);
 		#end
+		
+		//scroll fog
 		fog.x --;
 		
 		super.update();
