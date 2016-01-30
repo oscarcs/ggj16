@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 
 /**
@@ -26,7 +27,6 @@ class Player extends FlxSprite
 	
 	override public function update()
 	{
-		super.update();
 		
 		this.acceleration.x = 0;
 		
@@ -40,7 +40,7 @@ class Player extends FlxSprite
 			this.flipX = false;
 			this.acceleration.x += this.drag.x;
 		}
-		if (FlxG.keys.anyJustPressed(["UP", "W"]) && this.velocity.y == 0)
+		if (FlxG.keys.anyJustPressed(["UP", "W"]) && this.isTouching(FlxObject.FLOOR))
 		{
 			this.y -= 1;
 			this.velocity.y = -200;
@@ -62,6 +62,8 @@ class Player extends FlxSprite
 		}
 		*/
 		this.animation.play('idle');
+		
+				super.update();
 		
 	}
 }
