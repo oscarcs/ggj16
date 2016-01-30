@@ -65,7 +65,7 @@ CMDS = [
 def ProcessCommand(sock,client,cmd):
   if ("!Awaken" in cmd):
     chat(sock,"I am awakened")
-    client.send("Awakened".encode('utf-8'))
+    client.send("Awakened\n".encode('utf-8'))
 
 
 CHAT_MSG=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
