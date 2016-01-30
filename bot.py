@@ -19,7 +19,6 @@ def chat(sock, msg):
     sock -- the socket over which to send the message
     msg  -- the message to be sent
     """
-    print("PRIVMSG {} :{}".format(CHAN, msg))
     sock.send("PRIVMSG {} :{}\n".format(CHAN, msg).encode("utf-8"))
 
 def ban(sock, user):
@@ -56,16 +55,29 @@ gameHost = socket.gethostname()
 gameSocket.bind((gameHost,8080))
 gameSocket.listen(5)
 
+
+
 CMDS = [
     r"!Awaken",
     # ...
     r"!Killp1"
 ]
+class Command:
+    def __init__(self):
+        self.awaken = 0
+        self.awakened = False
+        
+    def ProcessCommand(self,sock,client,cmd):
+      if ("!Awaken" in cmd and not self.awakened):
+        self.AwakenPlus(sock,client,cmd)
 
-def ProcessCommand(sock,client,cmd):
-  if ("!Awaken" in cmd):
-    chat(sock,"I am awakened")
-    client.send("Awakened\n".encode('utf-8'))
+    def AwakenPlus(self,tsock,client,cmd):
+        self.awaken += 1
+        if(self.awaken > 20):
+            self.awakened = True
+            chat(tsock,"I am awakened")
+            client.send("Awakened\n".encode('utf-8'))
+
 
 
 CHAT_MSG=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
@@ -73,6 +85,8 @@ CHAT_MSG=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
 print('waiting for game client')
 client, address = gameSocket.accept()
 print('client found')
+
+command = Command()
 
 while True:
     response = s.recv(1024).decode("utf-8")
@@ -83,5 +97,5 @@ while True:
         message = CHAT_MSG.sub("", response)
         for pattern in CMDS:
             if re.match(pattern, message):
-                ProcessCommand(s,client,message)
+                command.ProcessCommand(s,client,message)
                 break
