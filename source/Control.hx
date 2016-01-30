@@ -76,7 +76,6 @@ class Control extends FlxBasic
 			var gamepad = gamepads[player];
 			if(gamepad.anyJustPressed([btnJump]))
 			{
-				trace("A");
 				return true;
 			}
 		}

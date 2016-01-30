@@ -66,7 +66,7 @@ class Game extends FlxState
 		spikes = new FlxGroup();
 		
 		level = new Level(this);
-		level.loadSections([0, 1]);
+		level.loadSections([0, 1, 3, 3, 0, 1]);
 		
 		add(chains);
 		add(spikes);

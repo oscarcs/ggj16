@@ -77,10 +77,10 @@ class Player extends FlxSprite
 		if (game.control.isPressedJump(index) && canJump)
 		{
 			this.y -= 1;
-			this.velocity.y = -120;
+			this.velocity.y = -150;
 			jumpReleased = false;
 			if (jumpTimer == null)
-				jumpTimer = new FlxTimer(0.25, OnJumpTimer);
+				jumpTimer = new FlxTimer(0.3, OnJumpTimer);
 		}
 		if (game.control.isJustPressedJump(index))
 		{
