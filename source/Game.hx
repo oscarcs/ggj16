@@ -25,6 +25,7 @@ class Game extends FlxState
 	public static var TILE_HEIGHT:Int = 32;
 	public static var GRAVITY:Int = 600;
 	
+	public var control:Control;
 	public var level:Level;
 	public var players:FlxGroup;
 	public var red:Player;
@@ -43,10 +44,19 @@ class Game extends FlxState
 	//objects and such
 	public var chains:FlxGroup;
 	
+	override public function new(control:Control)
+	{
+		super();
+		this.control = control;
+	}
+	
 	override public function create():Void
 	{
 		super.create();
 		FlxG.worldBounds.set(0, 0, 10000, 10000);
+		
+		
+		add(control);
 		
 		//set up the backgrounds
 		addBackgrounds();
@@ -59,10 +69,10 @@ class Game extends FlxState
 		add(chains);
 		
 		players = new FlxGroup();
-		red = new Player(this, 32, 32, "assets/player/red.png");
-		orange = new Player(this, 64, 32, "assets/player/orange.png");
-		yellow = new Player(this, 96, 32, "assets/player/yellow.png");
-		green = new Player(this, 128, 32, "assets/player/green.png");
+		red = new Player(this, 32, 32, "assets/player/red.png", 0);
+		orange = new Player(this, 64, 32, "assets/player/orange.png", 1);
+		yellow = new Player(this, 96, 32, "assets/player/yellow.png", 2);
+		green = new Player(this, 128, 32, "assets/player/green.png", 3);
 		players.add(red);
 		players.add(orange);
 		players.add(yellow);
@@ -87,6 +97,8 @@ class Game extends FlxState
 	
 	override public function update():Void
 	{
+		control.update();
+		
 		#if !flash
 		var clientData = Thread.readMessage(false);
 		if(clientData != null)

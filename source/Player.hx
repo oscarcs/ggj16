@@ -12,13 +12,15 @@ class Player extends FlxSprite
 {
 	public var game:Game;
 	public var accFloor = 800;
+	public var index:Int;
 	
-	public function new(game:Game, x:Int, y:Int, graphic:String) 
+	public function new(game:Game, x:Int, y:Int, graphic:String, index:Int) 
 	{
 		super(x, y);
 		loadGraphic(graphic, true, 32, 32);
 		
 		this.game = game;
+		this.index = index;
 		this.drag.x = 640;
 		this.acceleration.y = Game.GRAVITY;
 		this.maxVelocity.set(120, 500);
@@ -44,7 +46,7 @@ class Player extends FlxSprite
 			acceleration.y = Game.GRAVITY;
 		}
 		
-		if (FlxG.keys.anyPressed(["LEFT", "A"]))
+		if (game.control.isLeft(index))
 		{
 			this.flipX = true;
 			this.acceleration.x -= this.accFloor;
@@ -53,7 +55,7 @@ class Player extends FlxSprite
 				wallSlide();
 			}
 		}
-		else if (FlxG.keys.anyPressed(["RIGHT", "D"]))
+		else if (game.control.isRight(index))
 		{
 			this.flipX = false;
 			this.acceleration.x += this.accFloor;
@@ -62,10 +64,12 @@ class Player extends FlxSprite
 				wallSlide();
 			}
 		}
-		if (FlxG.keys.anyJustPressed(["UP", "W"]) 
+		
+		
+		if (game.control.isJustPressedJump(index) 
 			&& (this.isTouching(FlxObject.FLOOR)
-				|| this.isTouching(FlxObject.RIGHT)
-				|| this.isTouching(FlxObject.LEFT)))
+			|| this.isTouching(FlxObject.RIGHT)
+			|| this.isTouching(FlxObject.LEFT)))
 		{
 			this.y -= 1;
 			this.velocity.y = -420;

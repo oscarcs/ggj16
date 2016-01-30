@@ -24,7 +24,6 @@ class Control extends FlxBasic
 		super.update();
 		
 		var templist = FlxG.gamepads.getActiveGamepads();
-		trace(templist.length);
 		
 		for (i in 0...templist.length)
 		{
@@ -39,13 +38,66 @@ class Control extends FlxBasic
 			if (!exists) gamepads.push(templist[i]);
 		}
 		
-		trace(gamepads.length);
-		
 		templist = [];
 	} 
 	
-	public function isPressedJump(player:Int):Bool
+	public function isJustPressedJump(player:Int):Bool
 	{
+		if (gamepads[player] != null)
+		{
+			var gamepad:FlxGamepad = gamepads[player];
+			if(gamepad.anyJustPressed([XboxButtonID.A]))
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyJustPressed(["UP", "W"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function isRight(player:Int):Bool
+	{
+		var gamepad = gamepads[player];
+		if (gamepad != null)
+		{
+			if (gamepad.getXAxis(XboxButtonID.LEFT_ANALOGUE_X) > 0)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyJustPressed(["RIGHT", "D"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function isLeft(player:Int):Bool
+	{
+		var gamepad = gamepads[player];
+		if (gamepad != null)
+		{
+			if (gamepad.getXAxis(XboxButtonID.LEFT_ANALOGUE_X) < 0)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyJustPressed(["LEFT", "A"]))
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 }
