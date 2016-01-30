@@ -29,17 +29,25 @@ class Level
 			
 			var tilemapData = loadMapString(sections[i]);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
-			//var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
-			//bgTilemap.loadMap(bgTilemapData, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
-			
+			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
+			bgTilemap.loadMap(bgTilemapData, "assets/bgtileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
 			tilemap.setPosition(x, y);
 			tilemaps.push(tilemap);
+
+			bgTilemap.setPosition(x, y);
+			bgTilemaps.push(bgTilemap);
+			
+			game.add(bgTilemap);
 			game.add(tilemap);
 			
-			x = tilemap.x + (tilemapData.entry % (tilemap.widthInTiles - 1)) * Game.TILE_WIDTH;
-			y = tilemap.y + Std.int(tilemapData.entry / (tilemap.widthInTiles-1)) * Game.TILE_HEIGHT;
-			trace(tilemap.widthInTiles - 1, x, y);
+			
+			var width = tilemap.widthInTiles;
+			#if flash
+				width --;
+			#end
+			x = tilemap.x + (tilemapData.entry % (width)) * Game.TILE_WIDTH;
+			y = tilemap.y + Std.int(tilemapData.entry / (width)) * Game.TILE_HEIGHT;
 		}
 	}
 	
@@ -69,8 +77,6 @@ class Level
 					}
 			}
 		}
-		
-		trace(tilemapData);
 		return { string:tilemapData, entry:entry };
 	}
 	

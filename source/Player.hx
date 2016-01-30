@@ -17,8 +17,8 @@ class Player extends FlxSprite
 		loadGraphic(graphic, true, 16, 16);
 		
 		this.drag.x = 640;
-		this.acceleration.y = 420;
-		this.maxVelocity.set(120, 200);
+		this.acceleration.y = 600;
+		this.maxVelocity.set(120, 500);
 		
 		this.animation.add('idle', [0]);
 		
@@ -43,7 +43,7 @@ class Player extends FlxSprite
 		if (FlxG.keys.anyJustPressed(["UP", "W"]) && this.isTouching(FlxObject.FLOOR))
 		{
 			this.y -= 1;
-			this.velocity.y = -200;
+			this.velocity.y = -300;
 		}
 		
 		// ANIMATION
