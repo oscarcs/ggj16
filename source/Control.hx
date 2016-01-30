@@ -14,6 +14,7 @@ class Control extends FlxBasic
 	public var gamepads:Array<FlxGamepad> = [];
 	
 	public var btnJump:Int;
+	public var btnHold:Int;
 	
 	
 	public function new()
@@ -21,8 +22,10 @@ class Control extends FlxBasic
 		super();
 		#if flash
 		btnJump = XboxButtonID.A;
+		btnHold = XboxButtonID.X;
 		#else
 		btnJump = 0;
+		btnHold = 2;
 		#end
 
 	}
@@ -68,7 +71,25 @@ class Control extends FlxBasic
 		}
 		return false;
 	}
-	
+	public function isJustPressedHold(player:Int):Bool
+	{
+		if (gamepads[player] != null)
+		{
+			var gamepad = gamepads[player];
+			if(gamepad.anyJustPressed([btnHold]))
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyJustPressed(["DOWN", "S"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	public function isJustPressedJump(player:Int):Bool
 	{
 		if (gamepads[player] != null)

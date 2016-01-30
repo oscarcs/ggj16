@@ -46,6 +46,7 @@ class Game extends FlxState
 	//objects and such
 	public var chains:FlxGroup;
 	public var spikes:FlxGroup;
+	public var ip = "192.168.1.77";//"10.30.0.71";
 	
 	override public function new(control:Control)
 	{
@@ -89,7 +90,7 @@ class Game extends FlxState
 		
 		#if !flash
 		socket = new sys.net.Socket();
-		socket.connect(new sys.net.Host("10.30.0.71"), 8080);
+		socket.connect(new sys.net.Host(ip), 8080);
 		clientThread = Thread.create(getMsgs);
 		clientThread.sendMessage(Thread.current());
 		#end

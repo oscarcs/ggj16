@@ -17,6 +17,7 @@ class Player extends FlxSprite
 	public var jumpTimer:FlxTimer = null;
 	public var canJump:Bool = true;
 	public var jumpReleased:Bool = true;
+	public var holding:Bool = false;
 	
 	public function new(game:Game, x:Int, y:Int, graphic:String, index:Int) 
 	{
@@ -45,13 +46,24 @@ class Player extends FlxSprite
 			canJump = true;
 		}
 		
-		if (FlxG.overlap(this, game.chains))
+		if (!holding && game.control.isJustPressedHold(index) && FlxG.overlap(this, game.chains))
 		{
+			velocity.x = 0;
+			velocity.y = 0;
+			acceleration.x = 0;
 			acceleration.y = 0;
+			holding = true;
+			
 		}
-		else
+		else if(!holding)
 		{
 			acceleration.y = Game.GRAVITY;
+		}
+		else 
+		{
+			canJump = true;
+			if (game.control.isJustPressedHold(index))
+				holding = false;
 		}
 		
 		if (FlxG.overlap(this, game.spikes, game.killedBySpike))
@@ -59,36 +71,41 @@ class Player extends FlxSprite
 			this.kill();
 		}
 		
-		if (game.control.isLeft(index))
+		if (!holding)
 		{
-			this.flipX = true;
-			this.acceleration.x -= this.accFloor;
-			if (this.isTouching(FlxObject.LEFT) && this.velocity.y > 0)
+			if (game.control.isLeft(index))
 			{
-				wallSlide();
+				this.flipX = true;
+				this.acceleration.x -= this.accFloor;
+				if (this.isTouching(FlxObject.LEFT) && this.velocity.y > 0)
+				{
+					wallSlide();
+				}
 			}
-		}
-		else if (game.control.isRight(index))
-		{
-			this.flipX = false;
-			this.acceleration.x += this.accFloor;
-			if (this.isTouching(FlxObject.RIGHT) && this.velocity.y > 0)
+			else if (game.control.isRight(index))
 			{
-				wallSlide();
+				this.flipX = false;
+				this.acceleration.x += this.accFloor;
+				if (this.isTouching(FlxObject.RIGHT) && this.velocity.y > 0)
+				{
+					wallSlide();
+				}
 			}
 		}
 		
 		
 		if (game.control.isPressedJump(index) && canJump)
 		{
-			this.y -= 1;
+			
 			this.velocity.y = -150;
 			jumpReleased = false;
 			if (jumpTimer == null)
 				jumpTimer = new FlxTimer(0.3, OnJumpTimer);
+			holding = false;
 		}
 		if (game.control.isJustPressedJump(index))
 		{
+			this.y -= 1;
 			if (this.isTouching(FlxObject.RIGHT) && jumpReleased)
 			{
 				this.velocity.y = -320;
