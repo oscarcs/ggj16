@@ -114,16 +114,13 @@ class Player extends FlxSprite
 			
 			this.jumpSpd = this.startJumpSpd;
 			this.velocity.y = this.jumpSpd;
-			trace("A");
 			if (this.isTouching(FlxObject.RIGHT)  && canWallJump)
 			{
-				trace("R");
 				this.velocity.y = -320;
 				this.velocity.x = -320;
 			}
 			else if (this.isTouching(FlxObject.LEFT)  && canWallJump)
 			{
-				trace("L");
 				this.velocity.y = -320;
 				this.velocity.x = 320;
 			}

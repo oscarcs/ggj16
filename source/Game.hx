@@ -8,6 +8,7 @@ import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.util.FlxRandom;
 import flixel.addons.display.FlxBackdrop;
 #if !flash
 import sys.net.Socket;
@@ -47,7 +48,8 @@ class Game extends FlxState
 	//objects and such
 	public var chains:FlxGroup;
 	public var spikes:FlxGroup;
-	public var ip = "192.168.1.77";//"10.30.0.71";
+	public var ip = /*"192.168.1.77";//*/"10.30.0.52";
+	public var levelArray:Array<Int>;
 	
 	override public function new(control:Control)
 	{
@@ -70,7 +72,9 @@ class Game extends FlxState
 		spikes = new FlxGroup();
 		
 		level = new Level(this);
-		level.loadSections([0, 1, 3, 3, 0, 1]);
+		levelArray = GetRandomLevel(3);
+		trace(levelArray);
+		level.loadSections(levelArray);
 		
 		resolveChains();
 		resolveSpikes();
@@ -215,4 +219,18 @@ class Game extends FlxState
 		}
 	}
 	#end
+	
+	function GetRandomLevel(length:Int = -1):Array<Int>
+	{
+		var result:Array<Int> =  new Array<Int>();
+		var actualLength = length;
+		if (actualLength < 0)
+			actualLength = FlxRandom.intRanged(10, 20);
+			
+		for (i in 0...actualLength)
+		{
+			result.push(FlxRandom.intRanged(0, 3));
+		}
+		return result;
+	}
 }
