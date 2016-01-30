@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
@@ -16,6 +17,7 @@ import cpp.vm.Thread;
 #elseif neko
 import neko.vm.Thread;
 #end 
+import object.Spikes;
 
 import world.Level;
 
@@ -117,6 +119,20 @@ class Game extends FlxState
 		for (i in 0...level.tilemaps.length)
 		{
 			FlxG.collide(players, level.tilemaps[i]);
+		}
+	}
+	
+	public function killedBySpike(obj1:FlxObject, obj2:FlxObject)
+	{
+		if (Type.getClass(obj1) == Spikes) 
+		{
+			var spikes:Spikes = cast obj1;
+			spikes.makeBloody();
+		}
+		else if (Type.getClass(obj2) == Spikes)
+		{
+			var spikes:Spikes = cast obj2;
+			spikes.makeBloody();
 		}
 	}
 	
