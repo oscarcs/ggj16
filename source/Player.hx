@@ -54,6 +54,11 @@ class Player extends FlxSprite
 			acceleration.y = Game.GRAVITY;
 		}
 		
+		if (FlxG.overlap(this, game.spikes, game.killedBySpike))
+		{
+			this.kill();
+		}
+		
 		if (game.control.isLeft(index))
 		{
 			this.flipX = true;

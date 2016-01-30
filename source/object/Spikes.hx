@@ -13,4 +13,8 @@ class Spikes extends FlxSprite
 		super(x, y, "assets/objects/spikes/SpikesUp.png");
 	}
 	
+	public function makeBloody()
+	{
+		loadGraphic("assets/objects/spikes/SpikesUp_Blood.png");
+	}
 }
