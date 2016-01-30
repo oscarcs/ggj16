@@ -29,25 +29,32 @@ class Level
 			
 			var tilemapData = loadMapString(sections[i]);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
+			
 			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
 			bgTilemap.loadMap(bgTilemapData, "assets/bgtileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
-			tilemap.setPosition(x, y);
-			tilemaps.push(tilemap);
-
-			bgTilemap.setPosition(x, y);
-			bgTilemaps.push(bgTilemap);
-			
-			game.add(bgTilemap);
-			game.add(tilemap);
-			
-			
-			var width = tilemap.widthInTiles;
+			var width:Int = tilemap.widthInTiles;
 			#if flash
 				width --;
 			#end
-			x = tilemap.x + (tilemapData.entry % (width)) * Game.TILE_WIDTH;
-			y = tilemap.y + Std.int(tilemapData.entry / (width)) * Game.TILE_HEIGHT;
+			
+			var enterx = (Std.int(tilemapData.entry % width) * Game.TILE_WIDTH);
+			var entery = (Std.int(tilemapData.entry / width) * Game.TILE_HEIGHT);
+			
+			tilemap.setPosition(x - enterx, y - entery);
+			bgTilemap.setPosition(x - enterx, y - entery);
+			
+			
+			x = tilemap.x + (Std.int(tilemapData.exit % width) * Game.TILE_WIDTH);
+			y = tilemap.y + (Std.int(tilemapData.exit / width) * Game.TILE_HEIGHT);
+			
+			trace(x, y, '|', enterx, entery);
+			
+			
+			game.add(bgTilemap);
+			game.add(tilemap);
+			tilemaps.push(tilemap);
+			bgTilemaps.push(bgTilemap);
 		}
 	}
 	
@@ -55,16 +62,21 @@ class Level
 	{
 		
 		var tilemapData:String = Assets.getText("assets/tilemaps/tm_" + index + ".txt");
-		var entry:Int = 0;
 		
+		var entry:Int = 0;
+		var exit:Int = 0;
 		var ind:Int = 0;
 		for (i in 0...tilemapData.length)
 		{
 			switch(tilemapData.charAt(i))
 			{
-				case 'X':
+				case '>': //transition to next room
+					exit = ind;
+					tilemapData = tilemapData.substr(0, i) + '1' + tilemapData.substr(i + 1);
+					ind++;
+				case '<': //transition to previous room
 					entry = ind;
-					tilemapData = tilemapData.substr(0, i) + '2' + tilemapData.substr(i + 1);
+					tilemapData = tilemapData.substr(0, i) + '1' + tilemapData.substr(i + 1);
 					ind++;
 				default:
 
@@ -77,7 +89,7 @@ class Level
 					}
 			}
 		}
-		return { string:tilemapData, entry:entry };
+		return { string:tilemapData, entry:entry, exit:exit };
 	}
 	
 }
