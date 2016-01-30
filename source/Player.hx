@@ -10,8 +10,8 @@ import flixel.FlxSprite;
  */
 class Player extends FlxSprite
 {
-	public var accFactor = 2;
 	public var game:Game;
+	public var accFloor = 800;
 	
 	public function new(game:Game, x:Int, y:Int, graphic:String) 
 	{
@@ -44,18 +44,34 @@ class Player extends FlxSprite
 		if (FlxG.keys.anyPressed(["LEFT", "A"]))
 		{
 			this.flipX = true;
-			this.acceleration.x -= this.drag.x * accFactor;
+			this.acceleration.x -= this.accFloor;
+			if (this.isTouching(FlxObject.LEFT) && this.velocity.y > 0)
+				WallSlide();
 		}
 		else if (FlxG.keys.anyPressed(["RIGHT", "D"]))
 		{
 			this.flipX = false;
-			this.acceleration.x += this.drag.x * accFactor;
+			this.acceleration.x += this.accFloor;
+			if (this.isTouching(FlxObject.RIGHT) && this.velocity.y > 0)
+				WallSlide();
 		}
 		if (FlxG.keys.anyJustPressed(["UP", "W"]) 
-			&& this.isTouching(FlxObject.FLOOR))
+			&& (this.isTouching(FlxObject.FLOOR)
+				|| this.isTouching(FlxObject.RIGHT)
+				|| this.isTouching(FlxObject.LEFT)))
 		{
 			this.y -= 1;
 			this.velocity.y = -420;
+			if (this.isTouching(FlxObject.RIGHT))
+			{
+				this.velocity.x = -320;
+				this.velocity.y *= 0.8;
+			}
+			else if (this.isTouching(FlxObject.LEFT))
+			{
+				this.velocity.x = 320;
+				this.velocity.y *= 0.8;
+			}
 		}
 		
 		// ANIMATION
@@ -77,5 +93,14 @@ class Player extends FlxSprite
 		
 				super.update();
 		
+	}
+	
+	public function WallSlide()
+	{
+		
+		if (this.velocity.y > 200)
+			this.acceleration.y *= -1;
+		else
+			this.acceleration.y /= 10;
 	}
 }
