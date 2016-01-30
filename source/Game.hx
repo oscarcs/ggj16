@@ -17,6 +17,7 @@ import cpp.vm.Thread;
 #elseif neko
 import neko.vm.Thread;
 #end 
+import object.Chain;
 import object.Spikes;
 
 import world.Level;
@@ -71,6 +72,8 @@ class Game extends FlxState
 		level = new Level(this);
 		level.loadSections([0, 1, 3, 3, 0, 1]);
 		
+		resolveChains();
+		resolveSpikes();
 		add(chains);
 		add(spikes);
 		
@@ -121,6 +124,54 @@ class Game extends FlxState
 		{
 			FlxG.collide(players, level.tilemaps[i]);
 		}
+	}
+	
+	public function resolveChains()
+	{
+		for (chain in chains.members)
+		{
+			var chain:Chain = cast chain;
+			chain.resolveType();
+		}
+	}
+	
+	public function resolveSpikes()
+	{
+		for (spike in spikes.members)
+		{
+			var spike:Spikes = cast spike;
+			spike.resolveType();
+		}
+	}
+	
+	public function isChain(x:Float, y:Float):Bool
+	{
+		
+		for (chain in chains.members)
+		{
+			var chain:Chain = cast chain;
+			if (chain.x == x && chain.y == y)
+			{
+				trace(chain.x, x, chain.y, y);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public function isSpikes(x:Float, y:Float):Bool
+	{
+		for (spike in spikes.members)
+		{
+			var spike:Spikes = cast spike;
+			if (spike.x == x && spike.y == y)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public function killedBySpike(obj1:FlxObject, obj2:FlxObject)
