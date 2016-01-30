@@ -7,6 +7,8 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.addons.display.FlxBackdrop;
+import sys.net.Socket;
+import neko.vm.Thread;
 
 import world.Level;
 
@@ -21,6 +23,8 @@ class Game extends FlxState
 	public var mid:FlxBackdrop;
 	public var fore:FlxBackdrop;
 	public var fog:FlxBackdrop;
+	public var socket:Socket;
+    public var clientThread:Thread;    
 	
 	override public function create():Void
 	{
@@ -43,6 +47,11 @@ class Game extends FlxState
 		player = new Player(this, 32, 32, "assets/player.png");
 		
 		add(fog);
+		
+		socket = new sys.net.Socket();
+		socket.connect(new sys.net.Host("10.30.0.71"), 8080);
+		clientThread = Thread.create(getMsgs);
+		clientThread.sendMessage(Thread.current());
 	}
 
 	override public function destroy():Void
@@ -52,6 +61,9 @@ class Game extends FlxState
 	
 	override public function update():Void
 	{
+		var clientData = Thread.readMessage(false);
+		if(clientData != null)
+			trace(clientData);
 		fog.x --;
 		
 		super.update();
@@ -60,6 +72,22 @@ class Game extends FlxState
 		for (i in 0...level.tilemaps.length)
 		{
 			FlxG.collide(player, level.tilemaps[i]);
+		}
+	}
+	
+	function getMsgs()
+	{
+		var main:Thread = Thread.readMessage(true);
+		while (true)
+		{
+			trace("b");
+			var clientData:String;
+			clientData = socket.input.readLine();
+			trace(clientData);
+			if (clientData.length > 0)
+			{
+				main.sendMessage(clientData);
+			}
 		}
 	}
 }
