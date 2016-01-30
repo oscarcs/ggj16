@@ -139,10 +139,17 @@ class Level
 	{
 		switch(type) {
 			case 'chain':
-				//if(game.chains.
-				game.chains.add(new Chain(xt * Game.TILE_WIDTH + xOffset, yt * Game.TILE_HEIGHT + yOffset));
+				var type = 'middle';
+				var x = xt * Game.TILE_WIDTH + xOffset;
+				var y = yt * Game.TILE_HEIGHT + yOffset;
+
+				game.chains.add(new Chain(x, y, game));
 			case 'spike':
-				game.spikes.add(new Spikes(xt * Game.TILE_WIDTH + xOffset, yt * Game.TILE_HEIGHT + yOffset));
+				var type = 'bottom';
+				var x = xt * Game.TILE_WIDTH + xOffset;
+				var y = yt * Game.TILE_HEIGHT + yOffset;
+
+				game.spikes.add(new Spikes(x, y, game));
 		}
 	}
 	
