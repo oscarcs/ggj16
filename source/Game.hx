@@ -29,6 +29,7 @@ class Game extends FlxState
 	public static var GRAVITY:Int = 1200;
 	
 	public var control:Control;
+	public var numPlayers:Int;
 	public var level:Level;
 	public var players:FlxGroup;
 	public var red:Player;
@@ -49,10 +50,14 @@ class Game extends FlxState
 	public var spikes:FlxGroup;
 	public var ip = "192.168.1.77";//"10.30.0.71";
 	
-	override public function new(control:Control)
+	//victory condition
+	public var playersInOrder:Array<Player> = [];
+	
+	override public function new(control:Control, numPlayers:Int)
 	{
 		super();
 		this.control = control;
+		this.numPlayers = numPlayers;
 	}
 	
 	override public function create():Void
@@ -70,7 +75,7 @@ class Game extends FlxState
 		spikes = new FlxGroup();
 		
 		level = new Level(this);
-		level.loadSections([0, 1, 3, 3, 0, 1]);
+		level.loadSections([0, 1, 0, 0]);
 		
 		resolveChains();
 		resolveSpikes();
@@ -79,14 +84,25 @@ class Game extends FlxState
 		
 		players = new FlxGroup();
 		red = new Player(this, 32, 32, "assets/player/red.png", 0);
-		orange = new Player(this, 64, 32, "assets/player/orange.png", 1);
-		yellow = new Player(this, 96, 32, "assets/player/yellow.png", 2);
-		green = new Player(this, 128, 32, "assets/player/green.png", 3);
 		players.add(red);
-		players.add(orange);
-		players.add(yellow);
-		players.add(green);
 		
+		if (numPlayers > 1)
+		{
+			orange = new Player(this, 64, 32, "assets/player/orange.png", 1);
+			players.add(orange);
+		}
+		
+		if (numPlayers > 2)
+		{
+			yellow = new Player(this, 96, 32, "assets/player/yellow.png", 2);
+			players.add(yellow);
+		}
+		
+		if (numPlayers > 3)
+		{
+			green = new Player(this, 128, 32, "assets/player/green.png", 3);
+			players.add(green);
+		}
 		
 		fog = new FlxBackdrop("assets/bg/fog.png", 1, 0, true, false);
 		add(fog);
@@ -152,7 +168,7 @@ class Game extends FlxState
 			var chain:Chain = cast chain;
 			if (chain.x == x && chain.y == y)
 			{
-				trace(chain.x, x, chain.y, y);
+				//trace(chain.x, x, chain.y, y);
 				return true;
 			}
 		}
