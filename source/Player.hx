@@ -10,14 +10,16 @@ import flixel.FlxSprite;
  */
 class Player extends FlxSprite
 {
-
+	public var game:Game;
+	
 	public function new(game:Game, x:Int, y:Int, graphic:String) 
 	{
 		super(x, y);
 		loadGraphic(graphic, true, 16, 16);
 		
+		this.game = game;
 		this.drag.x = 640;
-		this.acceleration.y = 600;
+		this.acceleration.y = Game.GRAVITY;
 		this.maxVelocity.set(120, 500);
 		
 		this.animation.add('idle', [0]);
@@ -30,6 +32,15 @@ class Player extends FlxSprite
 		
 		this.acceleration.x = 0;
 		
+		if (FlxG.overlap(this, game.chains))
+		{
+			acceleration.y = 0;
+		}
+		else
+		{
+			acceleration.y = Game.GRAVITY;
+		}
+		
 		if (FlxG.keys.anyPressed(["LEFT", "A"]))
 		{
 			this.flipX = true;
@@ -40,7 +51,8 @@ class Player extends FlxSprite
 			this.flipX = false;
 			this.acceleration.x += this.drag.x;
 		}
-		if (FlxG.keys.anyJustPressed(["UP", "W"]) && this.isTouching(FlxObject.FLOOR))
+		if (FlxG.keys.anyJustPressed(["UP", "W"]) 
+			&& this.isTouching(FlxObject.FLOOR))
 		{
 			this.y -= 1;
 			this.velocity.y = -300;

@@ -1,6 +1,7 @@
 package world;
 import flixel.tile.FlxTile;
 import flixel.tile.FlxTilemap;
+import object.Chain;
 import openfl.Assets;
 
 /**
@@ -27,7 +28,7 @@ class Level
 			var tilemap = new FlxTilemap();
 			var bgTilemap = new FlxTilemap();
 			
-			var tilemapData = loadMapString(sections[i]);
+			var tilemapData = loadMapString(sections[i], 16, 16);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
 			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
@@ -38,18 +39,20 @@ class Level
 				width --;
 			#end
 			
-			var enterx = (Std.int(tilemapData.entry % width) * Game.TILE_WIDTH);
-			var entery = (Std.int(tilemapData.entry / width) * Game.TILE_HEIGHT);
+			var enterx = 0;
+			var entery = 0;
+			if (i > 0)
+			{
+				var enterx = (Std.int(tilemapData.entry % width) * Game.TILE_WIDTH);
+				var entery = (Std.int(tilemapData.entry / width) * Game.TILE_HEIGHT);
+			}
 			
 			tilemap.setPosition(x - enterx, y - entery);
 			bgTilemap.setPosition(x - enterx, y - entery);
-			
+			trace(tilemap.x, tilemap.y);
 			
 			x = tilemap.x + (Std.int(tilemapData.exit % width) * Game.TILE_WIDTH);
 			y = tilemap.y + (Std.int(tilemapData.exit / width) * Game.TILE_HEIGHT);
-			
-			trace(x, y, '|', enterx, entery);
-			
 			
 			game.add(bgTilemap);
 			game.add(tilemap);
@@ -58,7 +61,7 @@ class Level
 		}
 	}
 	
-	public function loadMapString(index:Int)
+	public function loadMapString(index:Int, wt:Int, ht:Int)
 	{
 		
 		var tilemapData:String = Assets.getText("assets/tilemaps/tm_" + index + ".txt");
@@ -72,14 +75,17 @@ class Level
 			{
 				case '>': //transition to next room
 					exit = ind;
-					tilemapData = tilemapData.substr(0, i) + '1' + tilemapData.substr(i + 1);
+					changeTilemapData(tilemapData, i, '1');
 					ind++;
 				case '<': //transition to previous room
 					entry = ind;
-					tilemapData = tilemapData.substr(0, i) + '1' + tilemapData.substr(i + 1);
+					changeTilemapData(tilemapData, i, '1');
+					ind++;
+				case '|':
+					changeTilemapData(tilemapData, i, '0');
+					addObject(ind % wt, Std.int(ind / wt), 'chain');
 					ind++;
 				default:
-
 					if (tilemapData.charAt(i) != ' ' &&
 						tilemapData.charAt(i) != ',' &&
 						tilemapData.charAt(i) != '\n' &&
@@ -92,4 +98,16 @@ class Level
 		return { string:tilemapData, entry:entry, exit:exit };
 	}
 	
+	private function changeTilemapData(tilemapData:String, index:Int, replace:String)
+	{
+		tilemapData = tilemapData.substr(0, index) + replace + tilemapData.substr(index + 1);
+	}
+	
+	private function addObject(xt:Int, yt:Int, type:String)
+	{
+		switch(type) {
+			case 'chain':
+				game.chains.add(new Chain(xt * Game.TILE_WIDTH, yt * Game.TILE_HEIGHT));
+		}
+	}
 }
