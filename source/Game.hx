@@ -52,6 +52,7 @@ class Game extends FlxState
 	
 	//victory condition
 	public var playersInOrder:Array<Player> = [];
+	private var victoryText:FlxText;
 	
 	override public function new(control:Control, numPlayers:Int)
 	{
@@ -139,6 +140,17 @@ class Game extends FlxState
 		for (i in 0...level.tilemaps.length)
 		{
 			FlxG.collide(players, level.tilemaps[i]);
+		}
+		
+		trace(playersInOrder.length);
+		if (playersInOrder.length != 0)
+		{
+			var num:Int = playersInOrder[0].index + 1;
+			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' is victorious!', 20);
+			victoryText.setPosition((FlxG.width - victoryText.width) / 2, FlxG.height * 0.5);
+			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
+			victoryText.color = flixel.util.FlxColor.RED;
+			add(victoryText);
 		}
 	}
 	
