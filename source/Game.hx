@@ -14,7 +14,7 @@ import sys.net.Socket;
 import cpp.vm.Thread;
 #elseif neko
 import neko.vm.Thread;
-#end
+#end 
 
 import world.Level;
 
@@ -25,7 +25,11 @@ class Game extends FlxState
 	public static var GRAVITY:Int = 600;
 	
 	public var level:Level;
-	public var player:Player;
+	public var players:FlxGroup;
+	public var red:Player;
+	public var orange:Player;
+	public var green:Player;
+	public var yellow:Player;
 	public var back:FlxBackdrop;
 	public var mid:FlxBackdrop;
 	public var fore:FlxBackdrop;
@@ -53,10 +57,18 @@ class Game extends FlxState
 		
 		add(chains);
 		
-		player = new Player(this, 32, 32, "assets/player.png");
+		players = new FlxGroup();
+		red = new Player(this, 32, 32, "assets/player/red.png");
+		orange = new Player(this, 64, 32, "assets/player/orange.png");
+		yellow = new Player(this, 96, 32, "assets/player/yellow.png");
+		green = new Player(this, 128, 32, "assets/player/green.png");
+		players.add(red);
+		players.add(orange);
+		players.add(yellow);
+		players.add(green);
 		
 		
-		fog = new FlxBackdrop("assets/bg/fog.png", 0, 0, true, false);
+		fog = new FlxBackdrop("assets/bg/fog.png", 1, 0, true, false);
 		add(fog);
 		
 		#if !flash
@@ -82,11 +94,11 @@ class Game extends FlxState
 		fog.x --;
 		
 		super.update();
-		FlxG.camera.follow(player, 1);
+		FlxG.camera.follow(red, 1);
 		
 		for (i in 0...level.tilemaps.length)
 		{
-			FlxG.collide(player, level.tilemaps[i]);
+			FlxG.collide(players, level.tilemaps[i]);
 		}
 	}
 	

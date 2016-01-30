@@ -16,14 +16,17 @@ class Player extends FlxSprite
 	public function new(game:Game, x:Int, y:Int, graphic:String) 
 	{
 		super(x, y);
-		loadGraphic(graphic, true, 16, 16);
+		loadGraphic(graphic, true, 32, 32);
 		
 		this.game = game;
 		this.drag.x = 640;
 		this.acceleration.y = Game.GRAVITY;
 		this.maxVelocity.set(120, 500);
 		this.maxVelocity.x = 420;
-		this.animation.add('idle', [0]);
+		
+		this.animation.add('idle', [8, 9], 2);
+		this.animation.add('walk', [2, 3, 4, 5, 6, 7], 15);
+		this.animation.add('jump', [0, 1], 15);
 		
 		game.add(this);
 	}
@@ -59,7 +62,7 @@ class Player extends FlxSprite
 		}
 		
 		// ANIMATION
-		/*
+		
 		if (this.velocity.y != 0)
 		{   
 			this.animation.play("jump");
@@ -70,10 +73,10 @@ class Player extends FlxSprite
 		}
 		else
 		{
-			this.animation.play("run");
+			this.animation.play("walk");
 		}
-		*/
-		this.animation.play('idle');
+		
+		//this.animation.play('idle');
 		
 				super.update();
 		
