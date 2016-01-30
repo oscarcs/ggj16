@@ -23,7 +23,7 @@ class Game extends FlxState
 {
 	public static var TILE_WIDTH:Int = 32;
 	public static var TILE_HEIGHT:Int = 32;
-	public static var GRAVITY:Int = 600;
+	public static var GRAVITY:Int = 1200;
 	
 	public var level:Level;
 	public var player:Player;

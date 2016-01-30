@@ -19,7 +19,7 @@ class Player extends FlxSprite
 		loadGraphic(graphic, true, 16, 16);
 		
 		this.game = game;
-		this.drag.x = 640;
+		this.drag.x = 1200;
 		this.acceleration.y = Game.GRAVITY;
 		this.maxVelocity.set(120, 500);
 		this.maxVelocity.x = 420;
