@@ -8,7 +8,11 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.addons.display.FlxBackdrop;
 import sys.net.Socket;
+#if cpp
+import cpp.vm.Thread;
+#elseif neko
 import neko.vm.Thread;
+#end
 
 import world.Level;
 
