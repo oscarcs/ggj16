@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -18,6 +19,7 @@ import cpp.vm.Thread;
 import neko.vm.Thread;
 #end 
 import object.Chain;
+import object.Checkpoint;
 import object.Spikes;
 
 import world.Level;
@@ -32,6 +34,7 @@ class Game extends FlxState
 	public var numPlayers:Int;
 	public var level:Level;
 	public var players:FlxGroup;
+	public var cameraFollow:CameraFollow;
 	public var red:Player;
 	public var orange:Player;
 	public var green:Player;
@@ -48,6 +51,9 @@ class Game extends FlxState
 	//objects and such
 	public var chains:FlxGroup;
 	public var spikes:FlxGroup;
+	public var checkpoints:FlxGroup;
+	public var lastCheckpoint:Checkpoint;
+	
 	public var ip = "192.168.1.77";//"10.30.0.71";
 	
 	//victory condition
@@ -66,6 +72,8 @@ class Game extends FlxState
 		super.create();
 		FlxG.worldBounds.set(0, 0, 10000, 10000);
 		
+		cameraFollow = new CameraFollow(this);
+		add(cameraFollow);
 		
 		add(control);
 		
@@ -74,6 +82,7 @@ class Game extends FlxState
 		
 		chains = new FlxGroup();
 		spikes = new FlxGroup();
+		checkpoints = new FlxGroup();
 		
 		level = new Level(this);
 		level.loadSections([0, 1, 0, 0]);
@@ -82,6 +91,7 @@ class Game extends FlxState
 		resolveSpikes();
 		add(chains);
 		add(spikes);
+		add(checkpoints);
 		
 		players = new FlxGroup();
 		red = new Player(this, 32, 32, "assets/player/red.png", 0);
@@ -135,7 +145,7 @@ class Game extends FlxState
 		fog.x --;
 		
 		super.update();
-		FlxG.camera.follow(red, 1);
+		FlxG.camera.follow(cameraFollow, FlxCamera.STYLE_PLATFORMER);
 		
 		for (i in 0...level.tilemaps.length)
 		{

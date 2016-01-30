@@ -108,7 +108,7 @@ class Menu extends FlxState
 		
 		if (control.isSelect(0) || control.isSelect(1) || control.isSelect(2) || control.isSelect(3))
 		{
-			FlxG.switchState(new Game(control, selectIndex));
+			FlxG.switchState(new Game(control, selectIndex + 1));
 		}
 		
 

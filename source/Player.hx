@@ -88,7 +88,9 @@ class Player extends FlxSprite
 		
 		if (FlxG.overlap(this, game.spikes, game.killedBySpike))
 		{
-			this.kill();
+			//this.kill();
+			//this.reset(game.lastCheckpoint.x, game.lastCheckpoint.y);
+			this.setPosition(game.lastCheckpoint.x, game.lastCheckpoint.y);
 		}
 		
 		if (!holding)
