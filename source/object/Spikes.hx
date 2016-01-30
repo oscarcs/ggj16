@@ -5,11 +5,12 @@ import flixel.FlxSprite;
  * ...
  * @author oscarcs
  */
-class Chain extends FlxSprite
+class Spikes extends FlxSprite
 {
 
 	public function new(x:Int, y:Int) 
 	{
-		super(x, y, "assets/objects/chain/Chain_Mid_Brown.png");
+		super(x, y, "assets/objects/spikes/SpikesUp.png");
 	}
+	
 }

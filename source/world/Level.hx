@@ -2,6 +2,7 @@ package world;
 import flixel.tile.FlxTile;
 import flixel.tile.FlxTilemap;
 import object.Chain;
+import object.Spikes;
 import openfl.Assets;
 
 /**
@@ -84,6 +85,10 @@ class Level
 					tilemapData = substituteData(tilemapData, i, '0');
 					addObject(ind % wt, Std.int(ind / wt), 'chain');
 					ind++;
+				case '^':
+					tilemapData = substituteData(tilemapData, i, '0');
+					addObject(ind % wt, Std.int(ind / wt), 'spike');
+					ind++;
 				default:
 					if (tilemapData.charAt(i) != ' ' &&
 						tilemapData.charAt(i) != ',' &&
@@ -106,7 +111,10 @@ class Level
 	{
 		switch(type) {
 			case 'chain':
+				//if(game.chains.
 				game.chains.add(new Chain(xt * Game.TILE_WIDTH, yt * Game.TILE_HEIGHT));
+			case 'spike':
+				game.spikes.add(new Spikes(xt * Game.TILE_WIDTH, yt * Game.TILE_HEIGHT));
 		}
 	}
 }
