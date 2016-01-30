@@ -29,6 +29,7 @@ class Level
 			var bgTilemap = new FlxTilemap();
 			
 			var tilemapData = loadMapString(sections[i], 16, 16);
+			trace(tilemapData.string);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
 			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
@@ -75,14 +76,14 @@ class Level
 			{
 				case '>': //transition to next room
 					exit = ind;
-					changeTilemapData(tilemapData, i, '1');
+					tilemapData = substituteData(tilemapData, i, '1');
 					ind++;
 				case '<': //transition to previous room
 					entry = ind;
-					changeTilemapData(tilemapData, i, '1');
+					tilemapData = substituteData(tilemapData, i, '1');
 					ind++;
 				case '|':
-					changeTilemapData(tilemapData, i, '0');
+					tilemapData = substituteData(tilemapData, i, '0');
 					addObject(ind % wt, Std.int(ind / wt), 'chain');
 					ind++;
 				default:
@@ -98,9 +99,9 @@ class Level
 		return { string:tilemapData, entry:entry, exit:exit };
 	}
 	
-	private function changeTilemapData(tilemapData:String, index:Int, replace:String)
+	private function substituteData(tilemapData:String, index:Int, replace:String):String
 	{
-		tilemapData = tilemapData.substr(0, index) + replace + tilemapData.substr(index + 1);
+		return tilemapData.substr(0, index) + replace + tilemapData.substr(index + 1);
 	}
 	
 	private function addObject(xt:Int, yt:Int, type:String)
