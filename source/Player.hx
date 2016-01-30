@@ -88,7 +88,7 @@ class Player extends FlxSprite
 		
 		if (FlxG.overlap(this, game.spikes, game.killedBySpike))
 		{
-			//this.kill();
+			this.kill();
 		}
 		
 		if (!holding)
