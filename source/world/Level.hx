@@ -5,6 +5,12 @@ import object.Chain;
 import object.Spikes;
 import openfl.Assets;
 
+typedef QueuedObject = {
+	var xt:Int;
+	var yt:Int;
+	var type:String;
+}
+
 /**
  * ...
  * @author oscarcs
@@ -15,6 +21,8 @@ class Level
 	public var tilemaps:Array<FlxTilemap> = [];
 	public var bgTilemaps:Array<FlxTilemap> = [];
 	
+	private var objectQueue:Array<QueuedObject> = [];
+	
 	public function new(game:Game) 
 	{
 		this.game = game;
@@ -22,6 +30,10 @@ class Level
 	
 	public function loadSections(sections:Array<Int>)
 	{
+		var exitx = 0.;
+		var exity = 0.;
+		var enterx = 0.;
+		var entery = 0.;
 		var x = 0.;
 		var y = 0.;
 		for (i in 0...sections.length)
@@ -29,30 +41,46 @@ class Level
 			var tilemap = new FlxTilemap();
 			var bgTilemap = new FlxTilemap();
 			
-			var tilemapData = loadMapString(sections[i], 16, 16);
+
+			
+			
+			var tilemapData = loadMapString(sections[i], 16, 16, x, y);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
 			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
 			bgTilemap.loadMap(bgTilemapData, "assets/bgtileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
-			var width:Int = tilemap.widthInTiles;
-			#if flash
-				width --;
-			#end
-			
-			var enterx = 0;
-			var entery = 0;
+			var width:Int = 16;
+			enterx = 0;
+			entery = 0;
 			if (i > 0)
 			{
 				enterx = (Std.int(tilemapData.entry % width) * Game.TILE_WIDTH);
 				entery = (Std.int(tilemapData.entry / width) * Game.TILE_HEIGHT);
 			}
-			trace(x, y, enterx, entery, x - enterx, y - entery);
-			tilemap.setPosition(x - enterx, y - entery);
-			bgTilemap.setPosition(x - enterx, y - entery);
+			x = exitx - enterx;
+			y = exity - entery;
+			tilemap.setPosition(x, y);
+			bgTilemap.setPosition(x, y);
 			
-			x = tilemap.x + (Std.int(tilemapData.exit % width) * Game.TILE_WIDTH);
-			y = tilemap.y + (Std.int(tilemapData.exit / width) * Game.TILE_HEIGHT);
+			for (i in 0...objectQueue.length)
+			{
+				var cur = objectQueue[i];
+				addObject(cur.xt, cur.yt, x, y, cur.type);
+			}
+			objectQueue = [];
+			
+			/*
+			var width:Int = tilemap.widthInTiles;
+			#if flash
+				width --;
+			#end
+			*/
+			
+
+			
+			exitx = tilemap.x + (Std.int(tilemapData.exit % width) * Game.TILE_WIDTH);
+			exity = tilemap.y + (Std.int(tilemapData.exit / width) * Game.TILE_HEIGHT);
 			
 			game.add(bgTilemap);
 			game.add(tilemap);
@@ -61,7 +89,7 @@ class Level
 		}
 	}
 	
-	public function loadMapString(index:Int, wt:Int, ht:Int)
+	public function loadMapString(index:Int, wt:Int, ht:Int, x:Float, y:Float)
 	{
 		
 		var tilemapData:String = Assets.getText("assets/tilemaps/tm_" + index + ".txt");
@@ -83,11 +111,11 @@ class Level
 					ind++;
 				case '|':
 					tilemapData = substituteData(tilemapData, i, '0');
-					addObject(ind % wt, Std.int(ind / wt), 'chain');
+					queueObject(ind % wt, Std.int(ind / wt), 'chain');
 					ind++;
 				case '^':
 					tilemapData = substituteData(tilemapData, i, '0');
-					addObject(ind % wt, Std.int(ind / wt), 'spike');
+					queueObject(ind % wt, Std.int(ind / wt), 'spike');
 					ind++;
 				default:
 					if (tilemapData.charAt(i) != ' ' &&
@@ -107,14 +135,19 @@ class Level
 		return tilemapData.substr(0, index) + replace + tilemapData.substr(index + 1);
 	}
 	
-	private function addObject(xt:Int, yt:Int, type:String)
+	private function addObject(xt:Int, yt:Int, xOffset:Float, yOffset:Float, type:String)
 	{
 		switch(type) {
 			case 'chain':
 				//if(game.chains.
-				game.chains.add(new Chain(xt * Game.TILE_WIDTH, yt * Game.TILE_HEIGHT));
+				game.chains.add(new Chain(xt * Game.TILE_WIDTH + xOffset, yt * Game.TILE_HEIGHT + yOffset));
 			case 'spike':
-				game.spikes.add(new Spikes(xt * Game.TILE_WIDTH, yt * Game.TILE_HEIGHT));
+				game.spikes.add(new Spikes(xt * Game.TILE_WIDTH + xOffset, yt * Game.TILE_HEIGHT + yOffset));
 		}
+	}
+	
+	private function queueObject(xt:Int, yt:Int, type:String)
+	{
+		objectQueue.push( { xt:xt, yt:yt, type:type} );
 	}
 }
