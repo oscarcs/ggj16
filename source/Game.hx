@@ -46,11 +46,7 @@ class Game extends FlxState
 	public var mid:FlxBackdrop;
 	public var fore:FlxBackdrop;
 	public var fog:FlxBackdrop;
-	#if !flash
-	public var socket:Socket;
-    public var clientThread:Thread;
-	public var sendMsgThread:Thread;
-	#end
+	
 	
 	//objects and such
 	public var chains:FlxGroup;
@@ -61,16 +57,24 @@ class Game extends FlxState
 	public var lastCheckpoint:Checkpoint;
 	public var ended:Bool = false;
 	
+	#if !flash
+	public var socket:Socket;
+    public var clientThread:Thread;
+	public var sendMsgThread:Thread;
+	#end
+	
 	//victory condition
 	public var playersInOrder:Array<Player> = [];
 	private var victoryText:FlxText;
 	
-	override public function new(control:Control, numPlayers:Int, currentPlayerIndexes:Array<Int>, ip:String)
+	override public function new(control:Control, numPlayers:Int, currentPlayerIndexes:Array<Int>, ip:String, clientThread:Thread,sendMsgs:Thread)
 	{
 		super();
 		this.control = control;
 		this.numPlayers = numPlayers;
 		this.currentPlayerIndexes = currentPlayerIndexes;
+		this.clientThread = clientThread;
+		this.sendMsgThread = sendMsgs;
 		//this.ip = ip;
 	}
 	
@@ -128,15 +132,6 @@ class Game extends FlxState
 		
 		fog = new FlxBackdrop("assets/bg/fog.png", 1, 0, true, false);
 		add(fog);
-		
-		#if !flash
-		socket = new sys.net.Socket();
-		socket.connect(new sys.net.Host(ip), 8080);
-		clientThread = Thread.create(getMsgs);
-		clientThread.sendMessage(Thread.current());
-		sendMsgThread = Thread.create(sendMsgs);
-		sendMsgThread.sendMessage(Thread.current());
-		#end
 	}
 
 	override public function destroy():Void
@@ -153,24 +148,6 @@ class Game extends FlxState
 			restartAndEliminate(0);
 		}
 		
-		#if !flash
-		var clientData:String = Thread.readMessage(false);
-		if(clientData != null)
-		{
-			var data:Array<String> = clientData.split(" ");
-			if (data.length == 2)
-			{
-				if (data[0] == "Consume")
-				{
-				var playerNum:Int = Std.parseInt(data[1]);
-				var firePlayer:Player = cast players.members[playerNum];
-				firePlayer.setOnFire = true;
-				}
-			}
-			
-		}
-		#end
-		
 		//scroll fog
 		fog.x --;
 		
@@ -181,13 +158,6 @@ class Game extends FlxState
 		{
 			FlxG.collide(players, level.tilemaps[i]);
 		}
-		#if debug
-		//remove later
-		if (control.isJustPressedJump(0))
-		{
-			//sendMsgThread.sendMessage("AskConsume\n");
-		}
-		#end
 
 		if (playersInOrder.length != 0 && victoryText == null)
 		{
@@ -210,6 +180,24 @@ class Game extends FlxState
 			add(victoryText);
 			FlxG.camera.fade(FlxColor.BLACK, 2, false, fadeFunc);
 		}
+		
+		#if !flash
+		var clientData:String = Thread.readMessage(false);
+		if(clientData != null)
+		{
+			var data:Array<String> = clientData.split(" ");
+			if (data.length == 2)
+			{
+				if (data[0] == "Consume")
+				{
+				var playerNum:Int = Std.parseInt(data[1]);
+				var firePlayer:Player = cast players.members[playerNum];
+				firePlayer.setOnFire = true;
+				}
+			}
+			
+		}
+		#end
 	}
 	
 	public function restartAndEliminate(index:Int)
@@ -221,7 +209,7 @@ class Game extends FlxState
 	
 	private function newLevelFade()
 	{
-		FlxG.switchState(new Game(control, numPlayers - 1, currentPlayerIndexes, ip));
+		FlxG.switchState(new Game(control, numPlayers - 1, currentPlayerIndexes, ip,clientThread,sendMsgThread));
 	}
 	
 	public function resolveChains()
@@ -296,34 +284,6 @@ class Game extends FlxState
 		add(fore);
 	}
 	
-	#if !flash
-	function getMsgs()
-	{
-		var main:Thread = Thread.readMessage(true);
-		while (true)
-		{
-			var clientData:String;
-			clientData = socket.input.readLine();
-			if (clientData.length > 0)
-			{
-				main.sendMessage(clientData);
-			}
-		}
-	}
-	#end
-	
-	#if !flash
-	function sendMsgs()
-	{
-		var main:Thread = Thread.readMessage(true);
-		while (true)
-		{
-			var msgData:String =  Thread.readMessage(true);
-			trace("sending" + msgData);
-			socket.output.writeString(msgData);
-		}
-	}
-	#end
 	
 	function GetRandomLevel(length:Int = -1):Array<Int>
 	{

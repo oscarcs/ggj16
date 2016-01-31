@@ -47,8 +47,7 @@ s.send("JOIN {}\r\n".format(cfg.CHAN).encode("utf-8"))
 
 #Connect with game client---
 gameSocket = socket.socket()
-gameHost = socket.gethostname()
-gameSocket.bind((gameHost,8080))
+gameSocket.bind(("localhost",8080))
 gameSocket.listen(5)
 
 

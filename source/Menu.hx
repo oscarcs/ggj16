@@ -8,6 +8,15 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.text.FlxTextField;
 import flixel.util.FlxColor;
+#if !flash
+import sys.net.Socket;
+#end
+#if cpp
+import cpp.vm.Thread;
+#elseif neko
+import neko.vm.Thread;
+#end 
+
 
 /**
  * ...
@@ -33,6 +42,12 @@ class Menu extends FlxState
 	
 	private var xpc:Float = 0.64;
 	private var ypc:Float = 0.43;
+	
+	#if !flash
+	public var socket:Socket;
+    public var clientThread:Thread;
+	public var sendMsgThread:Thread;
+	#end
 	
 	override public function create():Void 
 	{
@@ -85,6 +100,15 @@ class Menu extends FlxState
 		
 		fog = new FlxBackdrop("assets/bg/fog.png", 1, 0, true, false);
 		add(fog);
+		
+		#if !flash
+		socket = new sys.net.Socket();
+		socket.connect(new sys.net.Host("localhost"), 8080);
+		clientThread = Thread.create(getMsgs);
+		clientThread.sendMessage(Thread.current());
+		sendMsgThread = Thread.create(sendMsgs);
+		sendMsgThread.sendMessage(Thread.current());
+		#end
 	}
 	
 	override public function update():Void 
@@ -134,7 +158,7 @@ class Menu extends FlxState
 		if (control.isSelect(0) || control.isSelect(1) || control.isSelect(2) || control.isSelect(3))
 		{
 			var cpi = [for (i in 0...(selectIndex + 1)) i];
-			FlxG.switchState(new Game(control, selectIndex + 1, cpi, input.text));
+			FlxG.switchState(new Game(control, selectIndex + 1, cpi, input.text,clientThread,sendMsgThread));
 		}
 		
 
@@ -144,5 +168,32 @@ class Menu extends FlxState
 	{
 		super.destroy();
 	}
+	#if !flash
+	function getMsgs()
+	{
+		var main:Thread = Thread.readMessage(true);
+		while (true)
+		{
+			var clientData:String;
+			clientData = socket.input.readLine();
+			if (clientData.length > 0)
+			{
+				main.sendMessage(clientData);
+			}
+		}
+	}
+	#end
 	
+	#if !flash
+	function sendMsgs()
+	{
+		var main:Thread = Thread.readMessage(true);
+		while (true)
+		{
+			var msgData:String =  Thread.readMessage(true);
+			trace("sending" + msgData);
+			socket.output.writeString(msgData);
+		}
+	}
+	#end
 }
