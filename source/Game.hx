@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -19,6 +20,7 @@ import cpp.vm.Thread;
 import neko.vm.Thread;
 #end 
 import object.Chain;
+import object.Checkpoint;
 import object.Spikes;
 
 import world.Level;
@@ -33,6 +35,7 @@ class Game extends FlxState
 	public var numPlayers:Int;
 	public var level:Level;
 	public var players:FlxGroup;
+	public var cameraFollow:CameraFollow;
 	public var red:Player;
 	public var orange:Player;
 	public var green:Player;
@@ -52,9 +55,12 @@ class Game extends FlxState
 	public var spikes:FlxGroup;
 	public var ip = /*"192.168.1.77";//*/"10.30.0.52";
 	public var levelArray:Array<Int>;
+	public var checkpoints:FlxGroup;
+	public var lastCheckpoint:Checkpoint;
 	
 	//victory condition
 	public var playersInOrder:Array<Player> = [];
+	private var victoryText:FlxText;
 	
 	override public function new(control:Control, numPlayers:Int)
 	{
@@ -68,6 +74,8 @@ class Game extends FlxState
 		super.create();
 		FlxG.worldBounds.set(0, 0, 10000, 10000);
 		
+		cameraFollow = new CameraFollow(this);
+		add(cameraFollow);
 		
 		add(control);
 		
@@ -76,6 +84,7 @@ class Game extends FlxState
 		
 		chains = new FlxGroup();
 		spikes = new FlxGroup();
+		checkpoints = new FlxGroup();
 		
 		level = new Level(this);
 		levelArray = GetRandomLevel(3);
@@ -86,6 +95,7 @@ class Game extends FlxState
 		resolveSpikes();
 		add(chains);
 		add(spikes);
+		add(checkpoints);
 		
 		players = new FlxGroup();
 		red = new Player(this, 32, 32, "assets/player/red.png", 0);
@@ -141,7 +151,7 @@ class Game extends FlxState
 		fog.x --;
 		
 		super.update();
-		FlxG.camera.follow(red, 1);
+		FlxG.camera.follow(cameraFollow, FlxCamera.STYLE_PLATFORMER);
 		
 		for (i in 0...level.tilemaps.length)
 		{
@@ -154,6 +164,16 @@ class Game extends FlxState
 			sendMsgThread.sendMessage("AskConsume\n");
 		}
 		#end
+
+		if (playersInOrder.length != 0)
+		{
+			var num:Int = playersInOrder[0].index + 1;
+			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' is victorious!', 20);
+			victoryText.setPosition((FlxG.width - victoryText.width) / 2, FlxG.height * 0.5);
+			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
+			victoryText.color = flixel.util.FlxColor.RED;
+			add(victoryText);
+		}
 	}
 	
 	public function resolveChains()

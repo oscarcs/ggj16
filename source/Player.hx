@@ -12,6 +12,9 @@ import flixel.FlxSprite;
 class Player extends FlxSprite
 {
 	public var game:Game;
+	public var setOnFire:Bool = false;
+	public var onFire:Bool = false;
+	
 	public var accFloor = 800;
 	public var index:Int;
 	public var jumpTimer:FlxTimer = null;
@@ -38,6 +41,7 @@ class Player extends FlxSprite
 		this.animation.add('idle', [8, 9], 2);
 		this.animation.add('walk', [2, 3, 4, 5, 6, 7], 15);
 		this.animation.add('jump', [0, 1], 15);
+		this.animation.add('climb', [10], 0);
 		
 		//set hitboxes
 		setSize(20, 32);
@@ -48,6 +52,21 @@ class Player extends FlxSprite
 	
 	override public function update()
 	{
+		if (setOnFire && !onFire)
+		{
+			loadGraphic("assets/player/fire.png", true, 32, 48);
+			this.animation.add('idle', [8, 9], 2);
+			this.animation.add('walk', [2, 3, 4, 5, 6, 7], 15);
+			this.animation.add('jump', [0, 1], 15);
+			
+			//set hitboxes
+			setSize(20, 48);
+			offset.set(6, 0);
+			
+			setOnFire = false;
+			onFire = true;
+		}
+		
 		//check if finished
 		if (game.level.ending != null)
 		{
@@ -89,6 +108,8 @@ class Player extends FlxSprite
 		if (FlxG.overlap(this, game.spikes, game.killedBySpike))
 		{
 			//this.kill();
+			//this.reset(game.lastCheckpoint.x, game.lastCheckpoint.y);
+			this.setPosition(game.lastCheckpoint.x, game.lastCheckpoint.y);
 		}
 		
 		if (!holding)
@@ -150,7 +171,11 @@ class Player extends FlxSprite
 		
 		// ANIMATION
 		
-		if (this.velocity.y != 0)
+		if (holding)
+		{
+			if(!onFire) this.animation.play("climb");
+		}
+		else if (this.velocity.y != 0)
 		{   
 			this.animation.play("jump");
 		}

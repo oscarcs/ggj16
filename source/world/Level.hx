@@ -1,7 +1,9 @@
 package world;
+import flixel.FlxSprite;
 import flixel.tile.FlxTile;
 import flixel.tile.FlxTilemap;
 import object.Chain;
+import object.Checkpoint;
 import object.Spikes;
 import openfl.Assets;
 
@@ -24,10 +26,13 @@ class Level
 	public var ending:FlxTilemap;
 	
 	private var objectQueue:Array<QueuedObject> = [];
+	private var throneDude:FlxSprite;
 	
 	public function new(game:Game) 
 	{
 		this.game = game;
+		
+
 	}
 	
 	public function loadSections(sections:Array<Int>)
@@ -82,6 +87,18 @@ class Level
 			exity = tilemap.y + (Std.int(tilemapData.exit / width) * Game.TILE_HEIGHT);
 			
 			game.add(bgTilemap);
+			
+			//add thronedude
+			if (i == sections.length - 1)
+			{
+				
+				throneDude = new FlxSprite(x, y, 'assets/objects/throneDude.png');
+				var tdx = (tilemap.width - throneDude.width) / 2;
+				var tdy = tilemap.height - throneDude.height + 25;
+				throneDude.setPosition(x + tdx, y + tdy);
+				game.add(throneDude);
+			}
+			
 			game.add(tilemap);
 			tilemaps.push(tilemap);
 			bgTilemaps.push(bgTilemap);
@@ -123,6 +140,10 @@ class Level
 					tilemapData = substituteData(tilemapData, i, '0');
 					queueObject(ind % wt, Std.int(ind / wt), 'spike');
 					ind++;
+				case 'C':
+					tilemapData = substituteData(tilemapData, i, '0');
+					queueObject(ind % wt, Std.int(ind / wt), 'checkpoint');
+					ind++;
 				default:
 					if (tilemapData.charAt(i) != ' ' &&
 						tilemapData.charAt(i) != ',' &&
@@ -156,6 +177,13 @@ class Level
 				var y = yt * Game.TILE_HEIGHT + yOffset;
 
 				game.spikes.add(new Spikes(x, y, game));
+			case 'checkpoint':
+				var x = xt * Game.TILE_WIDTH + xOffset;
+				var y = yt * Game.TILE_HEIGHT + yOffset;
+
+				var checkpoint = new Checkpoint(x, y, game);
+				if (game.lastCheckpoint == null) game.lastCheckpoint = checkpoint;
+				game.checkpoints.add(checkpoint);
 		}
 	}
 	
