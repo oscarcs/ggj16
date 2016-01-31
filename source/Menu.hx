@@ -174,7 +174,7 @@ class Menu extends FlxState
 			var data:String = clientData;
 			if (clientData == "Awaken")
 				awakened = true;
-			
+				bgdude.animation.play("awaken");
 		}
 		#end
 
