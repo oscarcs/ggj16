@@ -302,7 +302,6 @@ class Game extends FlxState
 			//result.push(FlxRandom.intRanged(0, 3));
 			result.push(Std.random(9));
 		}
-		//return [0,0];
 		return result;
 	}
 	

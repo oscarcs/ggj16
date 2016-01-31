@@ -64,7 +64,6 @@ class Menu extends FlxState
 		bgdude = new FlxSprite(0, 0, 'assets/menu/dude.png');
 		bgdude.loadGraphic('assets/menu/dude.png', true, 127, 145);
 		bgdude.animation.add('awaken', [0, 1, 2, 3], 4, false);
-		bgdude.animation.play('awaken');
 		selector = new FlxSprite(0, 0, "assets/menu/cursor.png");
 		titleText = new FlxText(0, 0, 0, 'A Cool Game', 20);
 		titleText.setFormat('assets/berryrotunda.ttf', 20);
@@ -179,7 +178,7 @@ class Menu extends FlxState
 			var data:String = clientData;
 			if (clientData == "Awaken")
 				awakened = true;
-			
+				bgdude.animation.play("awaken");
 		}
 		#end
 
