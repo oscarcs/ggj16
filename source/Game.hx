@@ -57,6 +57,7 @@ class Game extends FlxState
 	public var levelArray:Array<Int>;
 	public var checkpoints:FlxGroup;
 	public var lastCheckpoint:Checkpoint;
+	public var ended:Bool = false;
 	
 	//victory condition
 	public var playersInOrder:Array<Player> = [];
@@ -157,14 +158,7 @@ class Game extends FlxState
 		{
 			FlxG.collide(players, level.tilemaps[i]);
 		}
-		#if debug
-		//remove later
-		if (control.isJustPressedJump(0))
-		{
-			sendMsgThread.sendMessage("AskConsume\n");
-		}
-		#end
-
+		
 		if (playersInOrder.length != 0)
 		{
 			var num:Int = playersInOrder[0].index + 1;
@@ -280,14 +274,16 @@ class Game extends FlxState
 	function GetRandomLevel(length:Int = -1):Array<Int>
 	{
 		var result:Array<Int> =  new Array<Int>();
-		var actualLength = length;
+		/*var actualLength = length;
 		if (actualLength < 0)
 			actualLength = FlxRandom.intRanged(10, 20);
 			
 		for (i in 0...actualLength)
 		{
 			result.push(FlxRandom.intRanged(0, 3));
-		}
+		}*/
+		result.push(1);
+		result.push(1);
 		return result;
 	}
 }
