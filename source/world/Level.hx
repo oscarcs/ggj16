@@ -146,7 +146,9 @@ class Level
 			case '6':
 				width = 16;
 				height = 16;
-			
+			case '7':
+				width = 16;
+				height = 28;
 			case 'final':
 				width = 22;
 				height = 22;
