@@ -147,12 +147,16 @@ class Game extends FlxState
 		if(clientData != null)
 		{
 			var data:Array<String> = clientData.split(" ");
-			if (data[0] == "Consume")
+			if (data.length == 2)
 			{
-				var playerNum:Int = Std.parseInt(data[1])-1;
+				if (data[0] == "Consume")
+				{
+				var playerNum:Int = Std.parseInt(data[1]);
 				var firePlayer:Player = cast players.members[playerNum];
 				firePlayer.setOnFire = true;
+				}
 			}
+			
 		}
 		#end
 		
