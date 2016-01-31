@@ -4,7 +4,6 @@ import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import neko.vm.Thread;
 
 /**
  * ...

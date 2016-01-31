@@ -27,7 +27,7 @@ class CameraFollow extends FlxObject
 		for (i in 0...game.players.members.length)
 		{
 			var player:Player = cast game.players.members[i];
-			if (player.x > rightmost.x)
+			if (player.x-player.y > rightmost.x-player.y)
 			{
 				rightmost = player;
 			}
