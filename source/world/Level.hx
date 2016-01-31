@@ -48,13 +48,20 @@ class Level
 			var tilemap = new FlxTilemap();
 			var bgTilemap = new FlxTilemap();
 			
-			var tilemapData = loadMapString(sections[i], 16, 16, x, y);
+			var suffix:String = '' + sections[i];
+			if (i == sections.length - 1)
+			{
+				suffix = "final";
+			}
+			var d = resolveDimensions(suffix);
+			var width = d.width;
+			var height = d.height;
+			
+			var tilemapData = loadMapString(sections[i], suffix, width, height, x, y);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
 			
-			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + sections[i] + ".txt");
+			var bgTilemapData = Assets.getText("assets/tilemaps/bg_" + suffix + ".txt");
 			bgTilemap.loadMap(bgTilemapData, "assets/bgtileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
-			
-			var width:Int = 16;
 			enterx = 0;
 			entery = 0;
 			if (i > 0)
@@ -112,10 +119,35 @@ class Level
 		}
 	}
 	
-	public function loadMapString(index:Int, wt:Int, ht:Int, x:Float, y:Float)
+	public function resolveDimensions(suffix:String)
+	{
+		var width = 0;
+		var height = 0;
+		switch(suffix)
+		{
+			case '0':
+				width = 16;
+				height = 16;
+			case '1':
+				width = 19;
+				height = 16;
+			case '2':
+				width = 0;
+				height = 0;
+			case '3':
+				width = 16;
+				height = 16;
+			case 'final':
+				width = 22;
+				height = 22;
+		}
+		return { width:width, height:height };
+	}
+	
+	public function loadMapString(index:Int, suffix:String, wt:Int, ht:Int, x:Float, y:Float)
 	{
 		
-		var tilemapData:String = Assets.getText("assets/tilemaps/tm_" + index + ".txt");
+		var tilemapData:String = Assets.getText("assets/tilemaps/tm_" + suffix + ".txt");
 		
 		var entry:Int = 0;
 		var exit:Int = 0;

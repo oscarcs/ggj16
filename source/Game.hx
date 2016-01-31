@@ -170,6 +170,11 @@ class Game extends FlxState
 		}
 	}
 	
+	public function restartAndEliminate(index:Int)
+	{
+		
+	}
+	
 	public function resolveChains()
 	{
 		for (chain in chains.members)
