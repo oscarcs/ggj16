@@ -84,7 +84,7 @@ class Game extends FlxState
 	override public function create():Void
 	{
 		super.create();
-		FlxG.worldBounds.set(0, 0, 1000000, 1000000);
+		FlxG.worldBounds.set(-500000, -500000, 1000000, 1000000);
 		
 		cameraFollow = new CameraFollow(this);
 		add(cameraFollow);

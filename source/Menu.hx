@@ -65,10 +65,10 @@ class Menu extends FlxState
 		bgdude.loadGraphic('assets/menu/dude.png', true, 127, 145);
 		bgdude.animation.add('awaken', [0, 1, 2, 3], 4, false);
 		selector = new FlxSprite(0, 0, "assets/menu/cursor.png");
-		titleText = new FlxText(0, 0, 0, 'A Cool Game', 20);
+		titleText = new FlxText(0, 0, 0, 'The cult of Glo\' Baal', 20);
 		titleText.setFormat('assets/berryrotunda.ttf', 20);
 		titleText.color = FlxColor.WHITE;
-		creditText = new FlxText(0, 0, 0, 'A game by fhdhdhshahahh', 16);
+		creditText = new FlxText(0, 0, 0, '!Awaken', 16);
 		creditText.setFormat('assets/berryrotunda.ttf', 16);
 		creditText.color = titleText.color;
 		controllerText = new FlxText(0, 0, 0, 'Press X to join!', 16);
