@@ -79,8 +79,6 @@ class Player extends FlxSprite
 				if (game.numPlayers == game.playersInOrder.length)
 				{
 					game.sendMsgThread.sendMessage("AskConsume\n");
-					var firePlayer:Player = cast game.players.members[0];
-					firePlayer.setOnFire = true;
 				}
 				#end
 				game.ended = true;

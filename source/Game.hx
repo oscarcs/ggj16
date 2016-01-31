@@ -143,9 +143,17 @@ class Game extends FlxState
 		control.update();
 		
 		#if !flash
-		var clientData = Thread.readMessage(false);
+		var clientData:String = Thread.readMessage(false);
 		if(clientData != null)
-			trace("recieved message: "+clientData);
+		{
+			var data:Array<String> = clientData.split(" ");
+			if (data[0] == "Consume")
+			{
+				var playerNum:Int = Std.parseInt(data[1])-1;
+				var firePlayer:Player = cast players.members[playerNum];
+				firePlayer.setOnFire = true;
+			}
+		}
 		#end
 		
 		//scroll fog
@@ -287,6 +295,8 @@ class Game extends FlxState
 		{
 			result.push(FlxRandom.intRanged(0, 3));
 		}*/
+		result.push(1);
+		result.push(1);
 		result.push(1);
 		result.push(1);
 		return result;
