@@ -58,6 +58,7 @@ class Game extends FlxState
 	public var levelArray:Array<Int>;
 	public var checkpoints:FlxGroup;
 	public var lastCheckpoint:Checkpoint;
+	public var ended:Bool = false;
 	
 	//victory condition
 	public var playersInOrder:Array<Player> = [];
@@ -100,22 +101,24 @@ class Game extends FlxState
 		add(checkpoints);
 		
 		players = new FlxGroup();
-		red = new Player(this, 32, 32, "assets/player/red.png", 0);
-		players.add(red);
-		
-		if (currentPlayerIndexes.)
+		if (currentPlayerIndexes.lastIndexOf(0) != -1)
+		{
+			red = new Player(this, 32, 32, "assets/player/red.png", 0);
+			players.add(red);
+		}
+		if (currentPlayerIndexes.lastIndexOf(1) != -1)
 		{
 			orange = new Player(this, 64, 32, "assets/player/orange.png", 1);
 			players.add(orange);
 		}
 		
-		if (numPlayers > 2)
+		if (currentPlayerIndexes.lastIndexOf(2) != -1)
 		{
 			yellow = new Player(this, 96, 32, "assets/player/yellow.png", 2);
 			players.add(yellow);
 		}
 		
-		if (numPlayers > 3)
+		if (currentPlayerIndexes.lastIndexOf(3) != -1)
 		{
 			green = new Player(this, 128, 32, "assets/player/green.png", 3);
 			players.add(green);

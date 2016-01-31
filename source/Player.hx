@@ -62,18 +62,28 @@ class Player extends FlxSprite
 			//set hitboxes
 			setSize(20, 48);
 			offset.set(6, 0);
+			this.y -= 16;
 			
 			setOnFire = false;
 			onFire = true;
 		}
 		
 		//check if finished
-		if (game.level.ending != null)
+		if (game.level.ending != null && !game.ended)
 		{
 			if (FlxG.overlap(this, game.level.ending) && game.playersInOrder.indexOf(this) == -1)
 			{
 				game.playersInOrder.push(this);
 				trace(game.playersInOrder[0].index);
+				#if !flash
+				if (game.numPlayers == game.playersInOrder.length)
+				{
+					game.sendMsgThread.sendMessage("AskConsume\n");
+					var firePlayer:Player = cast game.players.members[0];
+					firePlayer.setOnFire = true;
+				}
+				#end
+				game.ended = true;
 			}
 		}
 		
