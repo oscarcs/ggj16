@@ -146,6 +146,11 @@ class Game extends FlxState
 	{
 		control.update();
 		
+		if (FlxG.keys.anyJustPressed(['R']))
+		{
+			restartAndEliminate(0);
+		}
+		
 		#if !flash
 		var clientData = Thread.readMessage(false);
 		if(clientData != null)
@@ -174,6 +179,7 @@ class Game extends FlxState
 		{
 			var num:Int = playersInOrder[0].index + 1;
 			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' is victorious!', 20);
+			victoryText.setFormat('assets/berryrotunda.ttf', 20);
 			victoryText.setPosition((FlxG.width - victoryText.width) / 2, FlxG.height * 0.5);
 			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
 			victoryText.color = flixel.util.FlxColor.RED;

@@ -16,6 +16,7 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="C:\Development\Haxe\haxe\lib\flixel-addons\1,1,1" />
+    <class path="C:\Development\Haxe\haxe\lib\flixel-ui\1,0,2" />
     <class path="C:\Development\Haxe\haxe\lib\flixel\3,3,12" />
     <class path="C:\Development\Haxe\haxe\lib\lime\2,8,3" />
     <class path="C:\Development\Haxe\haxe\lib\openfl\3,5,3" />
@@ -24,7 +25,7 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="flixel-addons=1.1.1&#xA;flixel=3.3.12&#xA;lime=2.8.3&#xA;openfl=3.5.3&#xA;openfl-next&#xA;tools=2.8.3&#xA;no-compilation&#xA;openfl-flash&#xA;FLX_RENDER_BLIT&#xA;web&#xA;display" />
+    <option directives="flixel-addons=1.1.1&#xA;flixel-ui=1.0.2&#xA;flixel=3.3.12&#xA;lime=2.8.3&#xA;openfl=3.5.3&#xA;openfl-next&#xA;tools=2.8.3&#xA;no-compilation&#xA;openfl-flash&#xA;FLX_RENDER_BLIT&#xA;web&#xA;display" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
