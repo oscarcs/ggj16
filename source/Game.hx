@@ -92,7 +92,7 @@ class Game extends FlxState
 		checkpoints = new FlxGroup();
 		
 		level = new Level(this);
-		levelArray = GetRandomLevel(2);
+		levelArray = GetRandomLevel(7);
 		trace(levelArray);
 		level.loadSections(levelArray);
 		
@@ -323,7 +323,7 @@ class Game extends FlxState
 		for (i in 0...actualLength)
 		{
 			//result.push(FlxRandom.intRanged(0, 3));
-			result.push(Std.random(4));
+			result.push(Std.random(7));
 		}
 		return result;
 	}
