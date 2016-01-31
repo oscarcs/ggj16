@@ -31,6 +31,8 @@ class Level
 	public function new(game:Game) 
 	{
 		this.game = game;
+		
+
 	}
 	
 	public function loadSections(sections:Array<Int>)

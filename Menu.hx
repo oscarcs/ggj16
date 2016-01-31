@@ -30,6 +30,11 @@ class Menu extends FlxState
 		//SKIP_MENU = true;
 		#end
 		
+				for (i in 0...15)
+		{
+			trace(i * 32);
+		}
+		
 		super.create();
 		
 		control = new Control();

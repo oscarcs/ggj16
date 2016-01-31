@@ -151,8 +151,7 @@ class Game extends FlxState
 		{
 			FlxG.collide(players, level.tilemaps[i]);
 		}
-		
-		trace(playersInOrder.length);
+
 		if (playersInOrder.length != 0)
 		{
 			var num:Int = playersInOrder[0].index + 1;
