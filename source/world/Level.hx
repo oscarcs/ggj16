@@ -18,8 +18,10 @@ typedef QueuedObject = {
 class Level
 {
 	public var game:Game;
+	
 	public var tilemaps:Array<FlxTilemap> = [];
 	public var bgTilemaps:Array<FlxTilemap> = [];
+	public var ending:FlxTilemap;
 	
 	private var objectQueue:Array<QueuedObject> = [];
 	
@@ -40,9 +42,6 @@ class Level
 		{
 			var tilemap = new FlxTilemap();
 			var bgTilemap = new FlxTilemap();
-			
-
-			
 			
 			var tilemapData = loadMapString(sections[i], 16, 16, x, y);
 			tilemap.loadMap(tilemapData.string, "assets/tileset.png", Game.TILE_WIDTH, Game.TILE_HEIGHT, FlxTilemap.AUTO);
@@ -86,6 +85,13 @@ class Level
 			game.add(tilemap);
 			tilemaps.push(tilemap);
 			bgTilemaps.push(bgTilemap);
+			
+			
+			//final room!
+			if (i == sections.length - 1)
+			{
+				addEnding(tilemap);
+			}
 		}
 	}
 	
@@ -156,5 +162,22 @@ class Level
 	private function queueObject(xt:Int, yt:Int, type:String)
 	{
 		objectQueue.push( { xt:xt, yt:yt, type:type} );
+	}
+	
+	private function addEnding(room:FlxTilemap)
+	{
+		var data = [for (i in 0...(room.widthInTiles * room.heightInTiles)) 0];
+		
+		ending = new FlxTilemap();
+		ending.heightInTiles = room.heightInTiles;
+		ending.widthInTiles = room.widthInTiles;
+		ending.loadMap(data, "assets/finishtileset.png", 32, 32, 0);
+		ending.setPosition(room.x, room.y);
+		
+		for (y in 0...ending.heightInTiles)
+		{
+			ending.setTile(3, y, 1, true);
+		}
+		game.add(ending);
 	}
 }

@@ -39,11 +39,26 @@ class Player extends FlxSprite
 		this.animation.add('walk', [2, 3, 4, 5, 6, 7], 15);
 		this.animation.add('jump', [0, 1], 15);
 		
+		//set hitboxes
+		setSize(20, 32);
+		offset.set(6, 0);
+		
 		game.add(this);
 	}
 	
 	override public function update()
 	{
+		//check if finished
+		if (game.level.ending != null)
+		{
+			if (FlxG.overlap(this, game.level.ending) && game.playersInOrder.indexOf(this) == -1)
+			{
+				game.playersInOrder.push(this);
+				trace(game.playersInOrder[0].index);
+			}
+		}
+		
+		
 		this.acceleration.x = 0;
 		canWallJump = false;
 		if (this.isTouching(FlxObject.FLOOR) && jumpReleased)
@@ -73,7 +88,7 @@ class Player extends FlxSprite
 		
 		if (FlxG.overlap(this, game.spikes, game.killedBySpike))
 		{
-			this.kill();
+			//this.kill();
 		}
 		
 		if (!holding)

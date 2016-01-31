@@ -29,6 +29,8 @@ class Spikes extends FlxSprite
 		{
 			case 'up':
 				loadGraphic(assetPath + 'Up.png');
+				setSize(32, 16);
+				offset.set(0, 16);
 			case 'down':
 				loadGraphic(assetPath + 'Down.png');
 			case 'left':

@@ -18,9 +18,8 @@ class Chain extends FlxSprite
 	
 	public function resolveType()
 	{
-		var UP:Bool = game.isChain(x, y - Game.TILE_HEIGHT);
+		var UP:Bool = game.isChain(x, y - Game.TILE_HEIGHT) || game.isChain(x, y - Game.TILE_HEIGHT - 3);
 		var DOWN:Bool = game.isChain(x, y + Game.TILE_HEIGHT);
-		trace(UP, DOWN);
 		
 		if (UP && DOWN)
 		{
@@ -50,5 +49,8 @@ class Chain extends FlxSprite
 			case 'bottom':
 				loadGraphic(assetPath + 'Bottom_Brown.png');
 		}
+		
+		setSize(6, 32);
+		offset.set(13, 0);
 	}
 }

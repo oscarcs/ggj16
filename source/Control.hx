@@ -169,4 +169,64 @@ class Control extends FlxBasic
 		}
 		return false;
 	}
+	
+	public function isUp(player:Int):Bool
+	{
+		var gamepad = gamepads[player];
+		if (gamepad != null)
+		{
+			if (gamepad.getYAxis(XboxButtonID.LEFT_ANALOGUE_Y) < 0)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyPressed(["UP", "W"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function isDown(player:Int):Bool
+	{
+		var gamepad = gamepads[player];
+		if (gamepad != null)
+		{
+			if (gamepad.getYAxis(XboxButtonID.LEFT_ANALOGUE_Y) > 0)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyPressed(["DOWN", "S"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function isSelect(player:Int):Bool
+	{
+		var gamepad = gamepads[player];
+		if (gamepad != null)
+		{
+			if(gamepad.anyPressed([btnJump]))
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (FlxG.keys.anyPressed(["ENTER"]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
