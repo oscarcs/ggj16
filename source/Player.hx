@@ -19,6 +19,7 @@ class Player extends FlxSprite
 	public var accFloor = 800;
 	public var index:Int;
 	public var jumpTimer:FlxTimer = null;
+	
 	public var canJump:Bool = true;
 	public var canWallJump:Bool = true;
 	public var jumpReleased:Bool = true;
@@ -26,6 +27,7 @@ class Player extends FlxSprite
 	public var startJumpSpd:Float = -150;
 	public var jumpSpd:Float = -150;
 	public var maxJumpSpd:Float = -200;
+	
 	
 	public function new(game:Game, x:Int, y:Int, graphic:String, index:Int) 
 	{

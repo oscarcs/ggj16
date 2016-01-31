@@ -12,6 +12,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxMath;
 import flixel.util.FlxRandom;
 import flixel.addons.display.FlxBackdrop;
+import flixel.util.FlxTimer;
 #if !flash
 import sys.net.Socket;
 #end
@@ -47,6 +48,8 @@ class Game extends FlxState
 	public var fore:FlxBackdrop;
 	public var fog:FlxBackdrop;
 	
+	public var toElim:Int = -1;
+	public var restartTimer:FlxTimer = null;
 	
 	//objects and such
 	public var chains:FlxGroup;
@@ -193,6 +196,8 @@ class Game extends FlxState
 				var playerNum:Int = Std.parseInt(data[1]);
 				var firePlayer:Player = cast players.members[playerNum];
 				firePlayer.setOnFire = true;
+				toElim = playerNum;
+				restartTimer = new FlxTimer(5, OnRestartTimer);
 				}
 			}
 			
@@ -304,5 +309,10 @@ class Game extends FlxState
 	private function fadeFunc()
 	{
 		FlxG.switchState(new Menu());
+	}
+	
+	public function OnRestartTimer(timer:FlxTimer)
+	{
+		restartAndEliminate(toElim);
 	}
 }
