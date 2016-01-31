@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.tweens.FlxTween;
 import object.Checkpoint;
 
 /**
@@ -32,7 +33,8 @@ class CameraFollow extends FlxObject
 			}
 		}
 		
-		setPosition(rightmost.x, rightmost.y - 100);
+		FlxTween.tween(this, { x:rightmost.x, y:rightmost.y }, 1);
+		//setPosition(rightmost.x, rightmost.y - 100);
 		
 		for (i in 0...game.checkpoints.members.length)
 		{

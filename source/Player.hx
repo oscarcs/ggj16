@@ -52,6 +52,12 @@ class Player extends FlxSprite
 	
 	override public function update()
 	{
+		if (!this.isOnScreen(FlxG.camera))
+		{
+			this.setPosition(game.lastCheckpoint.x, game.lastCheckpoint.y);
+		}
+		
+		
 		if (setOnFire && !onFire)
 		{
 			loadGraphic("assets/player/fire.png", true, 32, 48);

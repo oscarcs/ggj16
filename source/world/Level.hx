@@ -132,11 +132,21 @@ class Level
 				width = 19;
 				height = 16;
 			case '2':
-				width = 0;
-				height = 0;
+				width = 16;
+				height = 16;
 			case '3':
 				width = 16;
 				height = 16;
+			case '4':
+				width = 16;
+				height = 16;
+			case '5':
+				width = 16;
+				height = 16;
+			case '6':
+				width = 16;
+				height = 16;
+			
 			case 'final':
 				width = 22;
 				height = 22;
@@ -215,6 +225,7 @@ class Level
 
 				var checkpoint = new Checkpoint(x, y, game);
 				if (game.lastCheckpoint == null) game.lastCheckpoint = checkpoint;
+				trace(game.lastCheckpoint);
 				game.checkpoints.add(checkpoint);
 		}
 	}

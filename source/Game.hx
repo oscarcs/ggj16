@@ -8,6 +8,7 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import flixel.util.FlxColor;
 import flixel.util.FlxMath;
 import flixel.util.FlxRandom;
 import flixel.addons.display.FlxBackdrop;
@@ -34,6 +35,7 @@ class Game extends FlxState
 	public var control:Control;
 	public var numPlayers:Int;
 	public var level:Level;
+	public var currentPlayerIndexes:Array<Int> = [];
 	public var players:FlxGroup;
 	public var cameraFollow:CameraFollow;
 	public var red:Player;
@@ -63,11 +65,13 @@ class Game extends FlxState
 	public var playersInOrder:Array<Player> = [];
 	private var victoryText:FlxText;
 	
-	override public function new(control:Control, numPlayers:Int)
+	override public function new(control:Control, numPlayers:Int, currentPlayerIndexes:Array<Int>, ip:String)
 	{
 		super();
 		this.control = control;
 		this.numPlayers = numPlayers;
+		this.currentPlayerIndexes = currentPlayerIndexes;
+		//this.ip = ip;
 	}
 	
 	override public function create():Void
@@ -88,7 +92,7 @@ class Game extends FlxState
 		checkpoints = new FlxGroup();
 		
 		level = new Level(this);
-		levelArray = GetRandomLevel(3);
+		levelArray = GetRandomLevel(7);
 		trace(levelArray);
 		level.loadSections(levelArray);
 		
@@ -99,22 +103,24 @@ class Game extends FlxState
 		add(checkpoints);
 		
 		players = new FlxGroup();
-		red = new Player(this, 32, 32, "assets/player/red.png", 0);
-		players.add(red);
-		
-		if (numPlayers > 1)
+		if (currentPlayerIndexes.lastIndexOf(0) != -1)
+		{
+			red = new Player(this, 32, 32, "assets/player/red.png", 0);
+			players.add(red);
+		}
+		if (currentPlayerIndexes.lastIndexOf(1) != -1)
 		{
 			orange = new Player(this, 64, 32, "assets/player/orange.png", 1);
 			players.add(orange);
 		}
 		
-		if (numPlayers > 2)
+		if (currentPlayerIndexes.lastIndexOf(2) != -1)
 		{
 			yellow = new Player(this, 96, 32, "assets/player/yellow.png", 2);
 			players.add(yellow);
 		}
 		
-		if (numPlayers > 3)
+		if (currentPlayerIndexes.lastIndexOf(3) != -1)
 		{
 			green = new Player(this, 128, 32, "assets/player/green.png", 3);
 			players.add(green);
@@ -141,6 +147,11 @@ class Game extends FlxState
 	override public function update():Void
 	{
 		control.update();
+		
+		if (FlxG.keys.anyJustPressed(['R']))
+		{
+			restartAndEliminate(0);
+		}
 		
 		#if !flash
 		var clientData:String = Thread.readMessage(false);
@@ -170,21 +181,47 @@ class Game extends FlxState
 		{
 			FlxG.collide(players, level.tilemaps[i]);
 		}
-		
-		if (playersInOrder.length != 0)
+		#if debug
+		//remove later
+		if (control.isJustPressedJump(0))
+		{
+			//sendMsgThread.sendMessage("AskConsume\n");
+		}
+		#end
+
+		if (playersInOrder.length != 0 && victoryText == null)
 		{
 			var num:Int = playersInOrder[0].index + 1;
-			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' is victorious!', 20);
+			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' wins the round!', 20);
+			victoryText.setFormat('assets/berryrotunda.ttf', 20);
 			victoryText.setPosition((FlxG.width - victoryText.width) / 2, FlxG.height * 0.5);
 			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
 			victoryText.color = flixel.util.FlxColor.RED;
 			add(victoryText);
 		}
+		else if (numPlayers == 1 && victoryText == null)
+		{
+			var num:Int = currentPlayerIndexes[0] + 1;
+			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' wins the game!', 20);
+			victoryText.setFormat('assets/berryrotunda.ttf', 20);
+			victoryText.setPosition((FlxG.width - victoryText.width) / 2, FlxG.height * 0.5);
+			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
+			victoryText.color = flixel.util.FlxColor.RED;
+			add(victoryText);
+			FlxG.camera.fade(FlxColor.BLACK, 2, false, fadeFunc);
+		}
 	}
 	
 	public function restartAndEliminate(index:Int)
 	{
+		currentPlayerIndexes.remove(index);
+		FlxG.camera.flash(FlxColor.WHITE, 1, newLevelFade);
 		
+	}
+	
+	private function newLevelFade()
+	{
+		FlxG.switchState(new Game(control, numPlayers - 1, currentPlayerIndexes, ip));
 	}
 	
 	public function resolveChains()
@@ -291,18 +328,21 @@ class Game extends FlxState
 	function GetRandomLevel(length:Int = -1):Array<Int>
 	{
 		var result:Array<Int> =  new Array<Int>();
-		/*var actualLength = length;
+		var actualLength = length;
 		if (actualLength < 0)
 			actualLength = FlxRandom.intRanged(10, 20);
 			
 		for (i in 0...actualLength)
 		{
-			result.push(FlxRandom.intRanged(0, 3));
-		}*/
-		result.push(1);
-		result.push(1);
-		result.push(1);
-		result.push(1);
+			//result.push(FlxRandom.intRanged(0, 3));
+			result.push(Std.random(7));
+		}
+		return [0,0];
 		return result;
+	}
+	
+	private function fadeFunc()
+	{
+		FlxG.switchState(new Menu());
 	}
 }
