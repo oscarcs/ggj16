@@ -15,7 +15,6 @@ import flixel.util.FlxColor;
  */
 class Menu extends FlxState
 {
-	public static var SKIP_MENU:Bool = false;
 	public var control:Control;
 	
 	//text and menu
@@ -37,9 +36,6 @@ class Menu extends FlxState
 	
 	override public function create():Void 
 	{
-		#if debug
-		//SKIP_MENU = true;
-		#end
 		
 		super.create();
 		
@@ -48,7 +44,7 @@ class Menu extends FlxState
 		
 		//set up menu shit
 		bg = new FlxSprite(0, 0, 'assets/menu/bg.png');
-		selector = new FlxSprite(0, 0, "assets/objects/chain.png");
+		selector = new FlxSprite(0, 0, "assets/menu/cursor.png");
 		titleText = new FlxText(0, 0, 0, 'A Cool Game', 20);
 		titleText.setFormat('assets/berryrotunda.ttf', 20);
 		titleText.color = FlxColor.WHITE;
@@ -89,11 +85,6 @@ class Menu extends FlxState
 		
 		fog = new FlxBackdrop("assets/bg/fog.png", 1, 0, true, false);
 		add(fog);
-		
-		if (SKIP_MENU)
-		{
-			FlxG.switchState(new Game(control, 1, [0]));
-		}
 	}
 	
 	override public function update():Void 
@@ -143,7 +134,7 @@ class Menu extends FlxState
 		if (control.isSelect(0) || control.isSelect(1) || control.isSelect(2) || control.isSelect(3))
 		{
 			var cpi = [for (i in 0...(selectIndex + 1)) i];
-			FlxG.switchState(new Game(control, selectIndex + 1, cpi));
+			FlxG.switchState(new Game(control, selectIndex + 1, cpi, input.text));
 		}
 		
 

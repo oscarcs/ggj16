@@ -8,6 +8,7 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import flixel.util.FlxColor;
 import flixel.util.FlxMath;
 import flixel.util.FlxRandom;
 import flixel.addons.display.FlxBackdrop;
@@ -64,12 +65,13 @@ class Game extends FlxState
 	public var playersInOrder:Array<Player> = [];
 	private var victoryText:FlxText;
 	
-	override public function new(control:Control, numPlayers:Int, currentPlayerIndexes:Array<Int>)
+	override public function new(control:Control, numPlayers:Int, currentPlayerIndexes:Array<Int>, ip:String)
 	{
 		super();
 		this.control = control;
 		this.numPlayers = numPlayers;
 		this.currentPlayerIndexes = currentPlayerIndexes;
+		this.ip = ip;
 	}
 	
 	override public function create():Void
@@ -90,7 +92,7 @@ class Game extends FlxState
 		checkpoints = new FlxGroup();
 		
 		level = new Level(this);
-		levelArray = GetRandomLevel(10);
+		levelArray = GetRandomLevel(2);
 		trace(levelArray);
 		level.loadSections(levelArray);
 		
@@ -175,22 +177,39 @@ class Game extends FlxState
 		}
 		#end
 
-		if (playersInOrder.length != 0)
+		if (playersInOrder.length != 0 && victoryText == null)
 		{
 			var num:Int = playersInOrder[0].index + 1;
-			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' is victorious!', 20);
+			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' wins the round!', 20);
 			victoryText.setFormat('assets/berryrotunda.ttf', 20);
 			victoryText.setPosition((FlxG.width - victoryText.width) / 2, FlxG.height * 0.5);
 			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
 			victoryText.color = flixel.util.FlxColor.RED;
 			add(victoryText);
 		}
+		else if (numPlayers == 1 && victoryText == null)
+		{
+			var num:Int = currentPlayerIndexes[0] + 1;
+			victoryText = new FlxText(0, 0, 0, 'Player ' + num + ' wins the game!', 20);
+			victoryText.setFormat('assets/berryrotunda.ttf', 20);
+			victoryText.setPosition((FlxG.width - victoryText.width) / 2, FlxG.height * 0.5);
+			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
+			victoryText.color = flixel.util.FlxColor.RED;
+			add(victoryText);
+			FlxG.camera.fade(FlxColor.BLACK, 2, false, fadeFunc);
+		}
 	}
 	
 	public function restartAndEliminate(index:Int)
 	{
 		currentPlayerIndexes.remove(index);
-		FlxG.switchState(new Game(control, numPlayers - 1, currentPlayerIndexes));
+		FlxG.camera.flash(FlxColor.WHITE, 1, newLevelFade);
+		
+	}
+	
+	private function newLevelFade()
+	{
+		FlxG.switchState(new Game(control, numPlayers - 1, currentPlayerIndexes, ip));
 	}
 	
 	public function resolveChains()
@@ -307,5 +326,10 @@ class Game extends FlxState
 			result.push(Std.random(4));
 		}
 		return result;
+	}
+	
+	private function fadeFunc()
+	{
+		FlxG.switchState(new Menu());
 	}
 }
