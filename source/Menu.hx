@@ -43,6 +43,7 @@ class Menu extends FlxState
 	
 	private var xpc:Float = 0.64;
 	private var ypc:Float = 0.43;
+	public var awakened = false;
 	
 	#if !flash
 	public var socket:Socket;
@@ -162,9 +163,20 @@ class Menu extends FlxState
 		if (control.isSelect(0) || control.isSelect(1) || control.isSelect(2) || control.isSelect(3))
 		{
 			var cpi = [for (i in 0...(selectIndex + 1)) i];
-			FlxG.switchState(new Game(control, selectIndex + 1, cpi, input.text,clientThread,sendMsgThread));
+			if(awakened)
+				FlxG.switchState(new Game(control, selectIndex + 1, cpi, input.text,clientThread,sendMsgThread));
 		}
 		
+		#if !flash
+		var clientData:String = Thread.readMessage(false);
+		if(clientData != null)
+		{
+			var data:String = clientData;
+			if (clientData == "Awaken")
+				awakened = true;
+			
+		}
+		#end
 
 	}
 	

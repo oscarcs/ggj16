@@ -84,7 +84,7 @@ class Command:
         if(self.awaken >= cfg.SPAM):
             self.awakened = True
             chat(tsock,"I am awakened")
-            client.send("Awakened\n".encode('utf-8'))
+            client.send("Awaken\n".encode('utf-8'))
 
     def VotePlus(self,tsock,client,num):
         print(self.candidates)
