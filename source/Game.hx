@@ -71,7 +71,7 @@ class Game extends FlxState
 		this.control = control;
 		this.numPlayers = numPlayers;
 		this.currentPlayerIndexes = currentPlayerIndexes;
-		this.ip = ip;
+		//this.ip = ip;
 	}
 	
 	override public function create():Void
@@ -154,9 +154,21 @@ class Game extends FlxState
 		}
 		
 		#if !flash
-		var clientData = Thread.readMessage(false);
+		var clientData:String = Thread.readMessage(false);
 		if(clientData != null)
-			trace("recieved message: "+clientData);
+		{
+			var data:Array<String> = clientData.split(" ");
+			if (data.length == 2)
+			{
+				if (data[0] == "Consume")
+				{
+				var playerNum:Int = Std.parseInt(data[1]);
+				var firePlayer:Player = cast players.members[playerNum];
+				firePlayer.setOnFire = true;
+				}
+			}
+			
+		}
 		#end
 		
 		//scroll fog
@@ -325,6 +337,7 @@ class Game extends FlxState
 			//result.push(FlxRandom.intRanged(0, 3));
 			result.push(Std.random(8));
 		}
+		return [0,0];
 		return result;
 	}
 	

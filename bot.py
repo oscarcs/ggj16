@@ -4,14 +4,9 @@ import re
 import socket
 import threading
 from time import sleep
+import cfg
 
-# --------------------------------------------- Start Settings ----------------------------------------------------
-HOST = "irc.twitch.tv"                          # Hostname of the IRC-Server in this case twitch's
-PORT = 6667                                     # Default IRC-Port
-CHAN = "#oce_humblepie"                               # Channelname = #{Nickname}
-NICK = "ritualbotbot"                                # Nickname = Twitch username
-PASS = "oauth:ico8y53ltf4mmkuncsecowqnb9dewx"   # www.twitchapps.com/tmi/ will help to retrieve the required authkey
-# --------------------------------------------- End Settings -------------------------------------------------------
+
 
 def chat(sock, msg):
     """
@@ -20,7 +15,7 @@ def chat(sock, msg):
     sock -- the socket over which to send the message
     msg  -- the message to be sent
     """
-    sock.send("PRIVMSG {} :{}\n".format(CHAN, msg).encode("utf-8"))
+    sock.send("PRIVMSG {} :{}\n".format(cfg.CHAN, msg).encode("utf-8"))
 
 def ban(sock, user):
     """
@@ -44,10 +39,10 @@ def timeout(sock, user, secs=600):
 
 #Join Channel----------------
 s = socket.socket()
-s.connect((HOST, PORT))
-s.send("PASS {}\r\n".format(PASS).encode("utf-8"))
-s.send("NICK {}\r\n".format(NICK).encode("utf-8"))
-s.send("JOIN {}\r\n".format(CHAN).encode("utf-8"))
+s.connect((cfg.HOST, cfg.PORT))
+s.send("PASS {}\r\n".format(cfg.PASS).encode("utf-8"))
+s.send("NICK {}\r\n".format(cfg.NICK).encode("utf-8"))
+s.send("JOIN {}\r\n".format(cfg.CHAN).encode("utf-8"))
 #---------------------------
 
 #Connect with game client---
@@ -60,8 +55,10 @@ gameSocket.listen(5)
 
 CMDS = [
     r"!Awaken",
-    r"!Killp1",
-    r"!Killp2"
+    r"!KillRed",
+    r"!KillOrange",
+    r"!KillYellow",
+    r"!KillGreen"
 ]
 class Command:
     def __init__(self):
@@ -69,40 +66,48 @@ class Command:
         self.awakened = False
         self.consuming = False
         self.votes = [0,0,0,0]
+        self.candidates = []
         
     def ProcessCommand(self,sock,client,cmd):
       if ("!Awaken" in cmd and not self.awakened):
         self.AwakenPlus(sock,client,cmd)
-      if ("!Killp1" in cmd):
+      if ("!KillRed" in cmd):
+        self.VotePlus(sock,client,0)
+      if ("!KillOrange" in cmd):
         self.VotePlus(sock,client,1)
-      if ("!Killp2" in cmd):
+      if ("!KillYellow" in cmd):
         self.VotePlus(sock,client,2)
+      if ("!KillGreen" in cmd):
+        self.VotePlus(sock,client,3)
 
     def AwakenPlus(self,tsock,client,cmd):
         self.awaken += 1
-        if(self.awaken > 1):
+        if(self.awaken >= cfg.SPAM):
             self.awakened = True
             chat(tsock,"I am awakened")
             client.send("Awakened\n".encode('utf-8'))
 
     def VotePlus(self,tsock,client,num):
-        if self.consuming:
-            self.votes[num] += 1
-            if(self.votes[num] > 1):
-                chat(tsock,"I shall consume player "+str(num))
-                msg = "Consume "+str(num)+"\n"
-                print(msg)
-                client.send(msg.encode('utf-8'))
-                self.votes = [0,0,0,0]
-                self.consuming = False
+        print(self.candidates)
+        if num in self.candidates:
+            if self.consuming:
+                self.votes[num] += 1
+                if(self.votes[num] >= cfg.SPAM):
+                    chat(tsock,"I shall consume player "+str(num))
+                    msg = "Consume "+str(num)+"\n"
+                    client.send(msg.encode('utf-8'))
+                    self.votes = [0,0,0,0]
+                    self.consuming = False
 
-    def StartConsuming(self,tsock):
+    def StartConsuming(self,tsock,num1,num2):
         if(self.awakened and not self.consuming):
             self.consuming = True
             chat(tsock,"Who shall I consume?")
+            self.candidates = [num1,num2]
 
 
-CHAT_MSG=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
+CHAT_MSG = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
+CONSUME_MSG = r"AskConsume (\d+) (\d+)\n"
 
 print('waiting for game client')
 client, address = gameSocket.accept()
@@ -113,8 +118,11 @@ command = Command()
 def ClientLoop():
     while(True):
         response = client.recv(1024).decode("utf-8");
-        if response == "AskConsume\n":
-            command.StartConsuming(s)
+        if re.match(CONSUME_MSG,response):
+            num1 = int(re.match(CONSUME_MSG,response).group(1))
+            num2 = int(re.match(CONSUME_MSG,response).group(2))
+            print(str(num1)+" "+str(num2))
+            command.StartConsuming(s,num1,num2)
         if("Quit" in response):
             return
 

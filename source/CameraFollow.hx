@@ -33,7 +33,7 @@ class CameraFollow extends FlxObject
 			}
 		}
 		
-		FlxTween.tween(this, { x:rightmost.x, y:rightmost.y - 100 }, 1);
+		FlxTween.tween(this, { x:rightmost.x, y:rightmost.y }, 1);
 		//setPosition(rightmost.x, rightmost.y - 100);
 		
 		for (i in 0...game.checkpoints.members.length)

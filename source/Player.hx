@@ -80,16 +80,23 @@ class Player extends FlxSprite
 			if (FlxG.overlap(this, game.level.ending) && game.playersInOrder.indexOf(this) == -1)
 			{
 				game.playersInOrder.push(this);
-				trace(game.playersInOrder[0].index);
 				#if !flash
 				if (game.numPlayers == game.playersInOrder.length)
 				{
-					game.sendMsgThread.sendMessage("AskConsume\n");
-					var firePlayer:Player = cast game.players.members[0];
-					firePlayer.setOnFire = true;
+					var str:String = "AskConsume ";
+					str += Std.string(game.playersInOrder.pop());
+					str += " ";
+					if(game.playersInOrder.length > 0)
+						str += Std.string(game.playersInOrder.pop());
+					else
+						str += "0";
+					str += "\n";
+					
+					game.sendMsgThread.sendMessage("AskConsume 0 1\n");
+					game.ended = true;
 				}
 				#end
-				game.ended = true;
+				
 			}
 		}
 		
