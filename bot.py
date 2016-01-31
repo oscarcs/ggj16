@@ -47,8 +47,7 @@ s.send("JOIN {}\r\n".format(cfg.CHAN).encode("utf-8"))
 
 #Connect with game client---
 gameSocket = socket.socket()
-gameHost = socket.gethostname()
-gameSocket.bind((gameHost,8080))
+gameSocket.bind(("localhost",8080))
 gameSocket.listen(5)
 
 
@@ -85,7 +84,7 @@ class Command:
         if(self.awaken >= cfg.SPAM):
             self.awakened = True
             chat(tsock,"I am awakened")
-            client.send("Awakened\n".encode('utf-8'))
+            client.send("Awaken\n".encode('utf-8'))
 
     def VotePlus(self,tsock,client,num):
         print(self.candidates)
