@@ -45,7 +45,10 @@ class Menu extends FlxState
 		
 		//set up menu shit
 		bg = new FlxSprite(0, 0, 'assets/menu/bg.png');
-		bgdude = new FlxSprite(0, 0, 'assets/menu/MenuBackground_ThroneDude4.png');
+		bgdude = new FlxSprite(0, 0, 'assets/menu/dude.png');
+		bgdude.loadGraphic('assets/menu/dude.png', true, 127, 145);
+		bgdude.animation.add('awaken', [0, 1, 2, 3], 4, false);
+		bgdude.animation.play('awaken');
 		selector = new FlxSprite(0, 0, "assets/menu/cursor.png");
 		titleText = new FlxText(0, 0, 0, 'A Cool Game', 20);
 		titleText.setFormat('assets/berryrotunda.ttf', 20);
@@ -64,7 +67,7 @@ class Menu extends FlxState
 		
 		//arrange menu shit
 		bg.setPosition( -((bg.width - FlxG.width) / 2), -((bg.height - FlxG.height) / 2));
-		bgdude.setPosition( -((bgdude.width - FlxG.width) / 2), -((bgdude.height - FlxG.height) / 2));
+		bgdude.setPosition( -((bg.width - FlxG.width) / 2) + 736, -((bg.height - FlxG.height) / 2) + 504);
 		titleText.setPosition((FlxG.width - titleText.width) / 2, FlxG.height * 0.1);
 		creditText.setPosition((FlxG.width - creditText.width) / 2, FlxG.height * 0.15);
 		controllerText.setPosition(FlxG.width * xpc - 52, (FlxG.height * ypc) - 30);

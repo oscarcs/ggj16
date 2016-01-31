@@ -208,7 +208,7 @@ class Game extends FlxState
 			victoryText.scrollFactor.x = victoryText.scrollFactor.y = 0;
 			victoryText.color = flixel.util.FlxColor.RED;
 			add(victoryText);
-			FlxG.camera.fade(FlxColor.BLACK, 2, false, fadeFunc);
+			//FlxG.camera.fade(FlxColor.BLACK, 2, false, fadeFunc);
 		}
 	}
 	
@@ -335,9 +335,9 @@ class Game extends FlxState
 		for (i in 0...actualLength)
 		{
 			//result.push(FlxRandom.intRanged(0, 3));
-			result.push(Std.random(8));
+			result.push(Std.random(9));
 		}
-		return [0,0];
+		//return [0,0];
 		return result;
 	}
 	

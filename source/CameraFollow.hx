@@ -42,7 +42,10 @@ class CameraFollow extends FlxObject
 			if (rightmost.x > checkpoint.x)
 			{
 				checkpoint.light();
-				game.lastCheckpoint = checkpoint;
+				if (checkpoint.x > game.lastCheckpoint.x)
+				{
+					game.lastCheckpoint = checkpoint;
+				}
 			}
 		}
 	}
