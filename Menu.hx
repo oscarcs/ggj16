@@ -30,11 +30,6 @@ class Menu extends FlxState
 		//SKIP_MENU = true;
 		#end
 		
-				for (i in 0...15)
-		{
-			trace(i * 32);
-		}
-		
 		super.create();
 		
 		control = new Control();
@@ -113,7 +108,8 @@ class Menu extends FlxState
 		
 		if (control.isSelect(0) || control.isSelect(1) || control.isSelect(2) || control.isSelect(3))
 		{
-			FlxG.switchState(new Game(control, selectIndex + 1));
+			var cpi = [for (i in 0...(selectIndex + 1)) i];
+			FlxG.switchState(new Game(control, selectIndex + 1, cpi));
 		}
 		
 

@@ -34,6 +34,7 @@ class Game extends FlxState
 	public var control:Control;
 	public var numPlayers:Int;
 	public var level:Level;
+	public var currentPlayerIndexes:Array<Int> = [];
 	public var players:FlxGroup;
 	public var cameraFollow:CameraFollow;
 	public var red:Player;
@@ -62,11 +63,12 @@ class Game extends FlxState
 	public var playersInOrder:Array<Player> = [];
 	private var victoryText:FlxText;
 	
-	override public function new(control:Control, numPlayers:Int)
+	override public function new(control:Control, numPlayers:Int, currentPlayerIndexes:Array<Int>)
 	{
 		super();
 		this.control = control;
 		this.numPlayers = numPlayers;
+		this.currentPlayerIndexes = currentPlayerIndexes;
 	}
 	
 	override public function create():Void
@@ -87,7 +89,7 @@ class Game extends FlxState
 		checkpoints = new FlxGroup();
 		
 		level = new Level(this);
-		levelArray = GetRandomLevel(3);
+		levelArray = GetRandomLevel(10);
 		trace(levelArray);
 		level.loadSections(levelArray);
 		
@@ -101,7 +103,7 @@ class Game extends FlxState
 		red = new Player(this, 32, 32, "assets/player/red.png", 0);
 		players.add(red);
 		
-		if (numPlayers > 1)
+		if (currentPlayerIndexes.)
 		{
 			orange = new Player(this, 64, 32, "assets/player/orange.png", 1);
 			players.add(orange);
@@ -161,7 +163,7 @@ class Game extends FlxState
 		//remove later
 		if (control.isJustPressedJump(0))
 		{
-			sendMsgThread.sendMessage("AskConsume\n");
+			//sendMsgThread.sendMessage("AskConsume\n");
 		}
 		#end
 
@@ -178,7 +180,8 @@ class Game extends FlxState
 	
 	public function restartAndEliminate(index:Int)
 	{
-		
+		currentPlayerIndexes.remove(index);
+		FlxG.switchState(new Game(control, numPlayers - 1, currentPlayerIndexes));
 	}
 	
 	public function resolveChains()
@@ -291,7 +294,8 @@ class Game extends FlxState
 			
 		for (i in 0...actualLength)
 		{
-			result.push(FlxRandom.intRanged(0, 3));
+			//result.push(FlxRandom.intRanged(0, 3));
+			result.push(Std.random(4));
 		}
 		return result;
 	}
