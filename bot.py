@@ -2,6 +2,7 @@
 
 import re
 import socket
+import threading
 from time import sleep
 
 # --------------------------------------------- Start Settings ----------------------------------------------------
@@ -59,25 +60,46 @@ gameSocket.listen(5)
 
 CMDS = [
     r"!Awaken",
-    # ...
-    r"!Killp1"
+    r"!Killp1",
+    r"!Killp2"
 ]
 class Command:
     def __init__(self):
         self.awaken = 0
         self.awakened = False
+        self.consuming = False
+        self.votes = [0,0,0,0]
         
     def ProcessCommand(self,sock,client,cmd):
       if ("!Awaken" in cmd and not self.awakened):
         self.AwakenPlus(sock,client,cmd)
+      if ("!Killp1" in cmd):
+        self.VotePlus(sock,client,1)
+      if ("!Killp2" in cmd):
+        self.VotePlus(sock,client,2)
 
     def AwakenPlus(self,tsock,client,cmd):
         self.awaken += 1
-        if(self.awaken > 20):
+        if(self.awaken > 1):
             self.awakened = True
             chat(tsock,"I am awakened")
             client.send("Awakened\n".encode('utf-8'))
 
+    def VotePlus(self,tsock,client,num):
+        if self.consuming:
+            self.votes[num] += 1
+            if(self.votes[num] > 1):
+                chat(tsock,"I shall consume player "+str(num))
+                msg = "Consume "+str(num)+"\n"
+                print(msg)
+                client.send(msg.encode('utf-8'))
+                self.votes = [0,0,0,0]
+                self.consuming = False
+
+    def StartConsuming(self,tsock):
+        if(self.awakened and not self.consuming):
+            self.consuming = True
+            chat(tsock,"Who shall I consume?")
 
 
 CHAT_MSG=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
@@ -87,6 +109,17 @@ client, address = gameSocket.accept()
 print('client found')
 
 command = Command()
+
+def ClientLoop():
+    while(True):
+        response = client.recv(1024).decode("utf-8");
+        if response == "AskConsume\n":
+            command.StartConsuming(s)
+        if("Quit" in response):
+            return
+
+clientThread = threading.Thread(target=ClientLoop)
+clientThread.start()
 
 while True:
     response = s.recv(1024).decode("utf-8")
@@ -99,3 +132,4 @@ while True:
             if re.match(pattern, message):
                 command.ProcessCommand(s,client,message)
                 break
+    

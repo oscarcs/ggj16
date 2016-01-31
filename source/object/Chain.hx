@@ -20,7 +20,6 @@ class Chain extends FlxSprite
 	{
 		var UP:Bool = game.isChain(x, y - Game.TILE_HEIGHT) || game.isChain(x, y - Game.TILE_HEIGHT - 3);
 		var DOWN:Bool = game.isChain(x, y + Game.TILE_HEIGHT);
-		trace(UP, DOWN);
 		
 		if (UP && DOWN)
 		{
