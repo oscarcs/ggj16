@@ -1,7 +1,7 @@
 package;
 
 import flixel.addons.display.FlxBackdrop;
-import flixel.addons.ui.FlxInputText;
+//import flixel.addons.ui.FlxInputText;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.FlxG;
@@ -39,7 +39,7 @@ class Menu extends FlxState
 	private var controllerTexts:Array<FlxText> = [];
 	private var fog:FlxBackdrop;
 	
-	private var input:FlxInputText;
+	//private var input:FlxInputText;
 	
 	private var xpc:Float = 0.64;
 	private var ypc:Float = 0.43;
@@ -75,11 +75,13 @@ class Menu extends FlxState
 		controllerText = new FlxText(0, 0, 0, 'Press X to join!', 16);
 		controllerText.setFormat('assets/berryrotunda.ttf', 16);
 		
+		/*
 		input = new FlxInputText(0, 0, 250, 'Enter IP Address', 16);
 		input.height = 40;
 		input.setFormat('assets/berryrotunda.ttf', 16);
 		input.backgroundColor = FlxColor.TRANSPARENT;
 		input.color = titleText.color;
+		*/
 		
 		//arrange menu shit
 		bg.setPosition( -((bg.width - FlxG.width) / 2), -((bg.height - FlxG.height) / 2));
@@ -87,14 +89,14 @@ class Menu extends FlxState
 		titleText.setPosition((FlxG.width - titleText.width) / 2, FlxG.height * 0.1);
 		creditText.setPosition((FlxG.width - creditText.width) / 2, FlxG.height * 0.15);
 		controllerText.setPosition(FlxG.width * xpc - 52, (FlxG.height * ypc) - 30);
-		input.setPosition((FlxG.width - input.width) / 2, FlxG.height * 0.9);
+		//input.setPosition((FlxG.width - input.width) / 2, FlxG.height * 0.9);
 		add(bg);
 		add(bgdude);
 		add(titleText);
 		add(creditText);
 		add(controllerText);
 		add(selector);
-		add(input);
+		//add(input);
 		
 		for (i in 0...4)
 		{
@@ -167,7 +169,7 @@ class Menu extends FlxState
 		{
 			var cpi = [for (i in 0...(selectIndex + 1)) i];
 			if(awakened)
-				FlxG.switchState(new Game(control, selectIndex + 1, cpi, input.text,clientThread,sendMsgThread));
+				FlxG.switchState(new Game(control, selectIndex + 1, cpi, '',clientThread,sendMsgThread));
 		}
 		
 		#if !flash
